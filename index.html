@@ -957,33 +957,182 @@
           </div>
         </div>
 
-        <!-- ================= PHẦN III: TRẢ LỜI NGẮN ================= -->
+        <!-- ================= PHẦN III: TRẢ LỜI NGẮN (CÁC BÀI TOÁN THỰC TẾ) ================= -->
         <div class="space-y-4 pt-4">
           <div class="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 flex items-center justify-between">
             <span class="font-black text-sm text-emerald-950">PHẦN III: Câu trắc nghiệm Trả lời ngắn (6 câu - 3.0 điểm)</span>
             <span class="text-xs font-bold text-emerald-800">Mỗi câu đúng: 0.5 điểm</span>
           </div>
 
-          <!-- Câu 1 Phần III (Bài toán thực tiễn tối ưu) -->
-          <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-3">
+          <!-- CÂU 1 PHẦN III: BÀI TOÁN CẮT GẤP HỘP TỪ TẤM BÌA 12cm (HÌNH 1 & HÌNH 3) -->
+          <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-3" id="q-box-p3-1">
             <div class="flex items-center justify-between">
-              <span class="font-black text-sm text-[#1E2342]">Câu 1 <span class="text-xs font-bold text-slate-400">(Vận dụng thực tiễn tối ưu diện tích)</span></span>
+              <span class="font-black text-sm text-[#1E2342]">Câu 1 <span class="text-xs font-bold text-slate-400">(Vận dụng - Tối ưu thể tích hộp không nắp)</span></span>
               <span class="text-xs font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">0.5 điểm</span>
             </div>
 
             <p class="text-sm font-semibold text-slate-800 leading-relaxed">
-              Một người thợ muốn rào một mảnh đất hình chữ nhật có một cạnh là bờ sông thẳng (không cần rào cạnh này). Người đó có sẵn \(100\text{ m}\) dây thép gai để rào \(3\) cạnh còn lại. Diện tích lớn nhất của mảnh đất rào được là bao nhiêu mét vuông (\(\text{m}^2\))?
+              Từ một tấm bìa hình vuông có kích thước cạnh bằng \(12\text{ cm}\), người ta cắt bỏ bốn hình vuông bằng nhau có cạnh bằng \(x\text{ (cm)}\) ở bốn góc, rồi gập phần còn lại theo các đường nét đứt để tạo thành một chiếc hộp chữ nhật không có nắp (như hình vẽ bên dưới). Tìm giá trị của \(x\) (đơn vị: \(\text{cm}\)) để chiếc hộp thu được có thể tích lớn nhất.
             </p>
+
+            <!-- HÌNH VẼ VECTOR SVG TẤM BÌA CẮT 4 GÓC & KHỐI HỘP 3D (CHUẨN HÌNH 1 & 3) -->
+            <div class="flex justify-center my-3 bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm overflow-x-auto">
+              <svg width="490" height="230" viewBox="0 0 490 230" class="select-none max-w-full" style="font-family: 'Times New Roman', serif;">
+                <defs>
+                  <!-- Pattern gạch chéo cho 4 góc cắt -->
+                  <pattern id="hatch-pattern" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                    <line x1="0" y1="0" x2="0" y2="8" stroke="#1E2342" stroke-width="1.2" />
+                  </pattern>
+                  <!-- Mũi tên 2 đầu đo kích thước -->
+                  <marker id="dim-arrow-start" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 8 1.5 L 0 5 L 8 8.5 z" fill="#1E2342" />
+                  </marker>
+                  <marker id="dim-arrow-end" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1E2342" />
+                  </marker>
+                </defs>
+
+                <!-- ============ BÊN TRÁI: TẤM BÌA VUÔNG (tọa độ gốc x=40, y=25, cạnh 150) ============ -->
+                <!-- Hình vuông lớn ngoài -->
+                <rect x="40" y="25" width="150" height="150" fill="#FFFFFF" stroke="#1E2342" stroke-width="1.5" />
+
+                <!-- 4 góc bị cắt (gạch chéo, kích thước 36x36) -->
+                <rect x="40" y="25" width="36" height="36" fill="url(#hatch-pattern)" stroke="#1E2342" stroke-width="1.2" />
+                <rect x="154" y="25" width="36" height="36" fill="url(#hatch-pattern)" stroke="#1E2342" stroke-width="1.2" />
+                <rect x="40" y="139" width="36" height="36" fill="url(#hatch-pattern)" stroke="#1E2342" stroke-width="1.2" />
+                <rect x="154" y="139" width="36" height="36" fill="url(#hatch-pattern)" stroke="#1E2342" stroke-width="1.2" />
+
+                <!-- Các đường nét đứt gập đáy hộp -->
+                <line x1="76" y1="25" x2="76" y2="175" stroke="#1E2342" stroke-width="1.2" stroke-dasharray="4,4" />
+                <line x1="154" y1="25" x2="154" y2="175" stroke="#1E2342" stroke-width="1.2" stroke-dasharray="4,4" />
+                <line x1="40" y1="61" x2="190" y2="61" stroke="#1E2342" stroke-width="1.2" stroke-dasharray="4,4" />
+                <line x1="40" y1="139" x2="190" y2="139" stroke="#1E2342" stroke-width="1.2" stroke-dasharray="4,4" />
+
+                <!-- Nhãn chữ ở giữa đáy hộp -->
+                <text x="115" y="96" font-size="14" font-weight="bold" fill="#1E2342" text-anchor="middle">Đáy hộp</text>
+                <text x="115" y="114" font-size="13" fill="#64748B" text-anchor="middle">(sau khi gấp)</text>
+
+                <!-- Kích thước x ở góc trên bên trái -->
+                <line x1="40" y1="14" x2="76" y2="14" stroke="#1E2342" stroke-width="1" marker-start="url(#dim-arrow-start)" marker-end="url(#dim-arrow-end)" />
+                <text x="58" y="9" font-size="13" font-style="italic" fill="#1E2342" text-anchor="middle">x</text>
+
+                <line x1="28" y1="25" x2="28" y2="61" stroke="#1E2342" stroke-width="1" marker-start="url(#dim-arrow-start)" marker-end="url(#dim-arrow-end)" />
+                <text x="20" y="47" font-size="13" font-style="italic" fill="#1E2342" text-anchor="middle">x</text>
+
+                <!-- Kích thước cả cạnh 12 cm ở đáy -->
+                <line x1="40" y1="195" x2="190" y2="195" stroke="#1E2342" stroke-width="1.2" marker-start="url(#dim-arrow-start)" marker-end="url(#dim-arrow-end)" />
+                <text x="115" y="215" font-size="15" font-weight="bold" fill="#1E2342" text-anchor="middle">12 cm</text>
+
+                <!-- ============ BÊN PHẢI: CHIẾC HỘP 3D KHÔNG NẮP ============ -->
+                <!-- Mặt trước (78 x 40) -->
+                <polygon points="280,110 375,110 375,150 280,150" fill="#FFFFFF" stroke="#1E2342" stroke-width="1.5" />
+                <!-- Mặt hông phải (tô màu xám nhạt như hình mẫu) -->
+                <polygon points="375,110 435,65 435,105 375,150" fill="#E2E8F0" stroke="#1E2342" stroke-width="1.5" />
+                <!-- Miệng hộp mở ở trên nhìn thấy đáy trong -->
+                <polygon points="280,110 340,65 435,65 375,110" fill="none" stroke="#1E2342" stroke-width="1.5" />
+
+                <!-- Nét khuất bên trong (dashed) -->
+                <line x1="280" y1="150" x2="340" y2="105" stroke="#1E2342" stroke-width="1.2" stroke-dasharray="4,4" />
+                <line x1="340" y1="105" x2="435" y2="105" stroke="#1E2342" stroke-width="1.2" stroke-dasharray="4,4" />
+                <line x1="340" y1="105" x2="340" y2="65" stroke="#1E2342" stroke-width="1.2" stroke-dasharray="4,4" />
+
+                <!-- Mũi tên liên kết chuyển đổi giữa 2 hình -->
+                <path d="M 215,100 L 255,100" stroke="#CBD5E1" stroke-width="2.5" stroke-dasharray="3,3" />
+                <polygon points="255,96 265,100 255,104" fill="#94A3B8" />
+              </svg>
+            </div>
 
             <div class="flex items-center gap-3 pt-2">
               <label class="text-xs font-bold text-slate-600">Đáp số của bạn:</label>
-              <input type="text" id="p3_q1_ans" placeholder="Nhập số (vd: 1250)" class="w-48 bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-indigo-700 focus:outline-none focus:border-indigo-500">
-              <span class="text-xs font-bold text-slate-400">\(\text{m}^2\)</span>
+              <input type="text" id="p3_q1_ans" placeholder="Nhập số (vd: 2)" class="w-48 bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-indigo-700 focus:outline-none focus:border-indigo-500">
+              <span class="text-xs font-bold text-slate-400">\(\text{cm}\)</span>
             </div>
 
             <div id="sol-p3-1" class="hidden p-3 bg-amber-50 rounded-xl text-xs border border-amber-200 mt-2">
-              <span class="font-bold text-amber-900">💡 Đáp án: 1250.</span><br>
-              Gọi chiều rộng là \(x\) \((0 < x < 50)\). Chiều dài là \(100 - 2x\). Diện tích \(S(x) = x(100 - 2x) = -2x^2 + 100x\). Đạt GTLN tại \(x = 25 \implies S_{\max} = 1250\text{ m}^2\).
+              <span class="font-bold text-amber-900">💡 Đáp án: 2.</span><br>
+              Sau khi cắt bỏ 4 góc cạnh \(x\), đáy hộp là hình vuông có cạnh bằng \(12 - 2x\) (\(0 < x < 6\)), chiều cao hộp là \(x\).<br>
+              Thể tích khối hộp: \(V(x) = x(12 - 2x)^2 = 4x^3 - 48x^2 + 144x\).<br>
+              Đạo hàm: \(V'(x) = 12x^2 - 96x + 144 = 0 \Leftrightarrow 12(x - 2)(x - 6) = 0 \implies x = 2\text{ cm}\) (thỏa mãn \(0 < x < 6\)).<br>
+              Khi đó thể tích lớn nhất đạt \(V_{\max} = 2(12 - 4)^2 = 128\text{ cm}^3\).
+            </div>
+          </div>
+
+          <!-- CÂU 2 PHẦN III: BÀI TOÁN XÂY CẦU TỐI ƯU QUA DÒNG SÔNG (CHUẨN HÌNH 2) -->
+          <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-3" id="q-box-p3-2">
+            <div class="flex items-center justify-between">
+              <span class="font-black text-sm text-[#1E2342]">Câu 2 <span class="text-xs font-bold text-slate-400">(Vận dụng thực tiễn - Tối ưu tuyến đường đi qua sông)</span></span>
+              <span class="text-xs font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">0.5 điểm</span>
+            </div>
+
+            <p class="text-sm font-semibold text-slate-800 leading-relaxed">
+              Hai khu dân cư \(A\) và \(B\) nằm ở hai bên một con sông có hai bờ song song (như hình vẽ bên dưới). Khoảng cách từ \(A\) đến bờ sông là \(AH = 5\text{ km}\), khoảng cách từ \(B\) đến bờ sông là \(BK = 7\text{ km}\), và khoảng cách giữa hai hình chiếu trên bờ sông là \(HK = 12\text{ km}\). Người ta dự định xây dựng một cây cầu \(EF\) bắc vuông góc với dòng sông để nối tuyến đường bộ từ \(A\) đến \(B\) theo hành trình \(A \to E \to F \to B\). Để tổng chiều dài đường bộ \(AE + FB\) là ngắn nhất thì khoảng cách \(HE\) phải bằng bao nhiêu kilômét (\(\text{km}\))?
+            </p>
+
+            <!-- HÌNH VẼ VECTOR SVG DÒNG SÔNG & CÂY CẦU NỐI 2 BỜ (CHUẨN HÌNH 2) -->
+            <div class="flex justify-center my-3 bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm overflow-x-auto">
+              <svg width="420" height="250" viewBox="0 0 420 250" class="select-none max-w-full" style="font-family: 'Times New Roman', serif;">
+                <defs>
+                  <!-- Pattern gạch chéo dòng sông -->
+                  <pattern id="river-pattern" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                    <line x1="0" y1="0" x2="0" y2="10" stroke="#94A3B8" stroke-width="1" />
+                  </pattern>
+                </defs>
+
+                <!-- DÒNG SÔNG (vùng kẻ sọc chéo, x từ 140 đến 230) -->
+                <rect x="140" y="20" width="90" height="210" fill="url(#river-pattern)" stroke="#1E2342" stroke-width="1.5" />
+                <!-- Chữ Sông in nghiêng màu xanh đậm ở giữa -->
+                <text x="185" y="85" font-size="18" font-style="italic" font-weight="bold" fill="#1E40AF" text-anchor="middle">Sông</text>
+
+                <!-- Bờ trái: đường thẳng x = 140 -->
+                <line x1="140" y1="20" x2="140" y2="230" stroke="#1E2342" stroke-width="1.5" />
+                <!-- Bờ phải: đường thẳng x = 230 -->
+                <line x1="230" y1="20" x2="230" y2="230" stroke="#1E2342" stroke-width="1.5" />
+
+                <!-- ĐOẠN AH: vuông góc bờ sông (y = 60, x từ 65 đến 140) -->
+                <line x1="65" y1="60" x2="140" y2="60" stroke="#1E2342" stroke-width="1.3" />
+                <text x="100" y="52" font-size="14" font-weight="bold" fill="#1E2342" text-anchor="middle">5km</text>
+                <!-- Ký hiệu vuông góc tại H -->
+                <polyline points="140,68 132,68 132,60" fill="none" stroke="#1E2342" stroke-width="1.2" />
+                <text x="148" y="56" font-size="15" font-style="italic" font-weight="bold" fill="#1E2342">H</text>
+
+                <!-- ĐIỂM A (Ngôi sao vàng rực rỡ) -->
+                <polygon points="65,50 68,57 75,58 70,63 71,70 65,66 59,70 60,63 55,58 62,57" fill="#FACC15" stroke="#1E2342" stroke-width="1.2" />
+                <text x="50" y="55" font-size="16" font-style="italic" font-weight="bold" fill="#1E2342">A</text>
+
+                <!-- CÂU CẦU EF: đường chấm bi đỏ vuông góc 2 bờ sông (y = 145) -->
+                <line x1="140" y1="145" x2="230" y2="145" stroke="#DC2626" stroke-width="3" stroke-dasharray="3,4" />
+                <text x="130" y="152" font-size="15" font-style="italic" font-weight="bold" fill="#1E2342">E</text>
+                <text x="238" y="142" font-size="15" font-style="italic" font-weight="bold" fill="#1E2342">F</text>
+
+                <!-- ĐOẠN BK: vuông góc bờ sông (y = 175, x từ 230 đến 335) -->
+                <line x1="230" y1="175" x2="335" y2="175" stroke="#1E2342" stroke-width="1.3" />
+                <text x="285" y="195" font-size="14" font-weight="bold" fill="#1E2342" text-anchor="middle">7km</text>
+                <!-- Ký hiệu vuông góc tại K -->
+                <polyline points="230,167 238,167 238,175" fill="none" stroke="#1E2342" stroke-width="1.2" />
+                <text x="236" y="190" font-size="15" font-style="italic" font-weight="bold" fill="#1E2342">K</text>
+
+                <!-- ĐIỂM B (Ngôi sao vàng rực rỡ) -->
+                <polygon points="335,165 338,172 345,173 340,178 341,185 335,181 329,185 330,178 325,173 332,172" fill="#FACC15" stroke="#1E2342" stroke-width="1.2" />
+                <text x="350" y="180" font-size="16" font-style="italic" font-weight="bold" fill="#1E2342">B</text>
+
+                <!-- ĐOẠN ĐƯỜNG BỘ AE (xanh lá đậm) -->
+                <line x1="65" y1="60" x2="140" y2="145" stroke="#16A34A" stroke-width="2" />
+                <!-- ĐOẠN ĐƯỜNG BỘ FB (xanh lá đậm) -->
+                <line x1="230" y1="145" x2="335" y2="175" stroke="#16A34A" stroke-width="2" />
+              </svg>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+              <label class="text-xs font-bold text-slate-600">Đáp số của bạn:</label>
+              <input type="text" id="p3_q2_ans" placeholder="Nhập số (vd: 5)" class="w-48 bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-indigo-700 focus:outline-none focus:border-indigo-500">
+              <span class="text-xs font-bold text-slate-400">\(\text{km}\)</span>
+            </div>
+
+            <div id="sol-p3-2" class="hidden p-3 bg-amber-50 rounded-xl text-xs border border-amber-200 mt-2">
+              <span class="font-bold text-amber-900">💡 Đáp án: 5.</span><br>
+              Đặt khoảng cách \(HE = x\) (\(0 \le x \le 12\)), khi đó \(KF = 12 - x\).<br>
+              Tổng chiều dài đường bộ: \(f(x) = AE + FB = \sqrt{5^2 + x^2} + \sqrt{7^2 + (12 - x)^2}\).<br>
+              Áp dụng bất đẳng thức véc-tơ hoặc đạo hàm: \(f'(x) = \dfrac{x}{\sqrt{25 + x^2}} - \dfrac{12 - x}{\sqrt{49 + (12 - x)^2}} = 0 \Leftrightarrow \dfrac{x}{5} = \dfrac{12 - x}{7} \Leftrightarrow 7x = 60 - 5x \Leftrightarrow 12x = 60 \Leftrightarrow x = 5\text{ km}\).
             </div>
           </div>
         </div>
@@ -1522,11 +1671,13 @@
       }
       p2Score += 2.5; // Giả lập các câu khác phần II
 
-      // 3. Chấm Phần III
+      // 3. Chấm Phần III (Câu 1: Gấp hộp & Câu 2: Xây cầu qua sông)
       let p3Score = 0;
-      const p3Ans = document.getElementById('p3_q1_ans').value.trim();
-      if (p3Ans === "1250") p3Score += 0.5;
-      p3Score += 2.0;
+      const p3Ans1 = document.getElementById('p3_q1_ans')?.value.trim();
+      const p3Ans2 = document.getElementById('p3_q2_ans')?.value.trim();
+      if (p3Ans1 === "2") p3Score += 0.5;
+      if (p3Ans2 === "5") p3Score += 0.5;
+      p3Score += 1.5; // Giả lập các câu khác trong 6 câu đạt 2.5/3.0
 
       const totalScore = Number((p1Score + p2Score + p3Score).toFixed(2));
 
@@ -1547,6 +1698,7 @@
       document.getElementById('sol-p1-4').classList.remove('hidden');
       document.getElementById('sol-p2-1').classList.remove('hidden');
       document.getElementById('sol-p3-1').classList.remove('hidden');
+      document.getElementById('sol-p3-2')?.classList.remove('hidden');
 
       // Lưu vào Lịch sử
       examHistory.unshift({
