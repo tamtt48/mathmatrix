@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MathMatrix - Nền Tảng Luyện Thi Toán Chuẩn GDPT 2018</title>
+  <title>MathMatrix - Hệ Thống Luyện Thi Toán Chuẩn GDPT 2018</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -40,7 +40,6 @@
       color: #1E2342 !important;
       border-color: #1E2342 !important;
     }
-    /* KaTeX display fraction styling */
     .katex {
       font-size: 1.08em;
     }
@@ -63,7 +62,7 @@
 </head>
 <body class="min-h-screen text-[#1E2342] p-2 sm:p-5 flex flex-col items-center">
 
-  <!-- TOP BAR: ROLE SWITCHER & ANNOUNCEMENT -->
+  <!-- ================= TOP BAR: ROLE SWITCHER & ANNOUNCEMENT ================= -->
   <header class="w-full max-w-7xl mb-4 bg-white rounded-2xl app-border app-shadow-sm px-4 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-amber-100 border-2 border-[#1E2342] flex items-center justify-center text-xl shadow-[2px_2px_0_0_#1E2342]">
@@ -74,7 +73,7 @@
           <h1 class="heading-font text-xl font-black text-[#1E2342] tracking-tight">MathMatrix</h1>
           <span class="text-[11px] font-extrabold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full border border-indigo-200">GDPT 2018</span>
         </div>
-        <p class="text-[11px] text-slate-500 font-semibold">THPT FPT Cần Thơ • Khung Ma Trận 3 Phần Chuẩn Bộ GD&ĐT</p>
+        <p class="text-[11px] text-slate-500 font-semibold">Tổ Toán THPT FPT Cần Thơ • Khung Ma Trận 3 Phần Chuẩn Bộ GD&ĐT</p>
       </div>
     </div>
 
@@ -97,7 +96,7 @@
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
+  <!-- ================= MAIN APP CONTAINER ================= -->
   <div class="w-full max-w-7xl bg-white rounded-[32px] app-border app-shadow flex flex-col lg:flex-row overflow-hidden min-h-[820px]">
     
     <!-- ================= SIDEBAR ================= -->
@@ -265,7 +264,7 @@
             </div>
 
             <!-- 2. Tốt nghiệp THPT -->
-            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 hover:border-amber-500 transition cursor-pointer relative group flex flex-col justify-between" onclick="alert('Đã tải khung Ma trận Tốt nghiệp THPT 2026: 12 câu Phần I + 4 câu Phần II (thang lũy tiến) + 6 câu Phần III. Điểm thi này sẽ được tính vào Điểm TB Tốt nghiệp!')">
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 hover:border-amber-500 transition cursor-pointer relative group flex flex-col justify-between" onclick="alert('Đã chọn khung Ma trận Tốt nghiệp THPT: 12 câu Phần I + 4 câu Phần II (thang điểm lũy tiến 0.1, 0.25, 0.5, 1.0) + 6 câu Phần III. Điểm thi này sẽ được tính vào GPA Tốt nghiệp!')">
               <div>
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-black px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-800">Bộ GD&ĐT</span>
@@ -281,7 +280,7 @@
             </div>
 
             <!-- 3. Khối 11 -->
-            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 transition cursor-pointer flex flex-col justify-between" onclick="alert('Khung Ma trận Khối 11: Trọng tâm Dãy số, CSC, CSN, Hình học không gian cổ điển & Lượng giác.')">
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 transition cursor-pointer flex flex-col justify-between" onclick="alert('Khung Ma trận Khối 11: Trọng tâm Dãy số, Cấp số cộng, Cấp số nhân, Hình học không gian cổ điển & Lượng giác.')">
               <div>
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-black px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700">Khối 11</span>
@@ -405,8 +404,8 @@
               ⏱️
             </span>
             <div>
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Thời gian</p>
-              <span id="exam-timer-display" class="font-black text-rose-600 text-base">89:50</span>
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Thời gian còn lại</p>
+              <span id="exam-timer-display" class="font-black text-rose-600 text-base">90:00</span>
             </div>
           </div>
 
@@ -420,7 +419,7 @@
           </button>
         </div>
 
-        <!-- RESULT BANNER (HIDDEN AT FIRST) -->
+        <!-- RESULT BANNER -->
         <div id="gk1-result-modal" class="hidden bg-white p-6 rounded-3xl border-2 border-[#1E2342] app-shadow text-center space-y-4">
           <div class="inline-block p-3 bg-emerald-100 text-emerald-700 rounded-2xl text-2xl">
             🏆
@@ -560,6 +559,41 @@
               <span class="font-bold text-amber-900">💡 Đáp án: A.</span> Do \(\vec{u} = 2\vec{i} - 3\vec{j} + 1\vec{k} \implies \vec{u} = (2; -3; 1)\).
             </div>
           </div>
+
+          <!-- Câu 3 (GTLN-GTNN với \dfrac) -->
+          <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-3" id="q-box-p1-3">
+            <div class="flex items-center justify-between">
+              <span class="font-black text-sm text-[#1E2342]">Câu 3 <span class="text-xs font-bold text-slate-400">(Hiểu - Giá trị lớn nhất)</span></span>
+              <span class="text-xs font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">0.25 điểm</span>
+            </div>
+
+            <p class="text-sm font-semibold text-slate-800">
+              Giá trị nhỏ nhất của hàm số \(f(x) = x^3 - 3x + 4\) trên đoạn \([0; 2]\) bằng:
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                <input type="radio" name="p1_q3" value="A" class="accent-indigo-600">
+                <span class="text-xs font-bold"><strong>A.</strong> \(2\)</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                <input type="radio" name="p1_q3" value="B" class="accent-indigo-600">
+                <span class="text-xs font-bold"><strong>B.</strong> \(4\)</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                <input type="radio" name="p1_q3" value="C" class="accent-indigo-600">
+                <span class="text-xs font-bold"><strong>C.</strong> \(6\)</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                <input type="radio" name="p1_q3" value="D" class="accent-indigo-600">
+                <span class="text-xs font-bold"><strong>D.</strong> \(0\)</span>
+              </label>
+            </div>
+            
+            <div id="sol-p1-3" class="hidden p-3 bg-amber-50 rounded-xl text-xs border border-amber-200 mt-2">
+              <span class="font-bold text-amber-900">💡 Đáp án: A.</span> \(f'(x) = 3x^2 - 3 = 0 \Leftrightarrow x = 1 \in [0; 2]\). Ta có \(f(0) = 4, f(1) = 2, f(2) = 6 \implies \min = 2\).
+            </div>
+          </div>
         </div>
 
         <!-- ================= PHẦN II: ĐÚNG - SAI ================= -->
@@ -642,6 +676,73 @@
                  • b: <strong>ĐÚNG</strong> (\(y' = \dfrac{2(1) - (-1)(1)}{(x+1)^2} = \dfrac{3}{(x+1)^2}\)).<br>
                  • c: <strong>SAI</strong> (tiệm cận đứng là \(x = -1\), còn \(y = 2\) là tiệm cận ngang).<br>
                  • d: <strong>ĐÚNG</strong> (\(y' > 0, \forall x \neq -1\)).</p>
+            </div>
+          </div>
+
+          <!-- Câu 2 Phần II: HÌNH HỌC KHÔNG GIAN CÓ VẼ HÌNH VECTOR SVG -->
+          <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="font-black text-sm text-[#1E2342]">Câu 2 <span class="text-xs font-bold text-slate-400">(Hình học không gian & Vectơ Oxyz)</span></span>
+              <span class="text-xs font-extrabold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">Tối đa 1.0 điểm</span>
+            </div>
+
+            <p class="text-sm font-semibold text-slate-800">
+              Cho hình chóp \(S.ABCD\) có đáy \(ABCD\) là hình vuông cạnh \(a\), cạnh bên \(SA\) vuông góc với mặt phẳng đáy và \(SA = a\sqrt{2}\).
+            </p>
+
+            <!-- HÌNH VẼ KHÔNG GIAN VECTOR SVG (NÉT ĐỨT & NÉT LIỀN) -->
+            <div class="flex justify-center my-3 bg-slate-50/70 p-4 rounded-2xl border border-slate-200">
+              <svg width="280" height="200" viewBox="0 0 280 200" class="overflow-visible">
+                <!-- Nét đứt (cạnh khuất SA, AB, AD) -->
+                <line x1="60" y1="130" x2="60" y2="30" stroke="#1E2342" stroke-width="2" stroke-dasharray="4,4" />
+                <line x1="60" y1="130" x2="160" y2="130" stroke="#1E2342" stroke-width="2" stroke-dasharray="4,4" />
+                <line x1="60" y1="130" x2="20" y2="175" stroke="#1E2342" stroke-width="2" stroke-dasharray="4,4" />
+                
+                <!-- Nét liền (nhìn thấy) -->
+                <line x1="60" y1="30" x2="20" y2="175" stroke="#1E2342" stroke-width="2" />
+                <line x1="60" y1="30" x2="120" y2="175" stroke="#1E2342" stroke-width="2" />
+                <line x1="60" y1="30" x2="160" y2="130" stroke="#1E2342" stroke-width="2" />
+                <line x1="20" y1="175" x2="120" y2="175" stroke="#1E2342" stroke-width="2" />
+                <line x1="120" y1="175" x2="160" y2="130" stroke="#1E2342" stroke-width="2" />
+
+                <!-- Ký hiệu góc vuông tại đỉnh A -->
+                <polyline points="60,115 75,115 75,130" fill="none" stroke="#64748B" stroke-width="1.5" stroke-dasharray="2,2" />
+
+                <!-- Tên đỉnh -->
+                <text x="55" y="20" font-weight="bold" font-size="13" fill="#1E2342">S</text>
+                <text x="68" y="140" font-weight="bold" font-size="12" fill="#64748B">A</text>
+                <text x="8" y="185" font-weight="bold" font-size="13" fill="#1E2342">B</text>
+                <text x="125" y="190" font-weight="bold" font-size="13" fill="#1E2342">C</text>
+                <text x="168" y="135" font-weight="bold" font-size="13" fill="#1E2342">D</text>
+              </svg>
+            </div>
+
+            <div class="space-y-2.5">
+              <!-- Ý a -->
+              <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3 flex-wrap">
+                <span class="text-xs font-bold text-slate-800">a) Đường thẳng \(BD\) vuông góc với mặt phẳng \((SAC)\).</span>
+                <div class="flex items-center gap-3">
+                  <label class="flex items-center gap-1.5 text-xs font-bold text-emerald-700 cursor-pointer">
+                    <input type="radio" name="p2_q2_a" value="true" class="accent-emerald-600"> Đúng
+                  </label>
+                  <label class="flex items-center gap-1.5 text-xs font-bold text-rose-700 cursor-pointer">
+                    <input type="radio" name="p2_q2_a" value="false" class="accent-rose-600"> Sai
+                  </label>
+                </div>
+              </div>
+
+              <!-- Ý b -->
+              <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3 flex-wrap">
+                <span class="text-xs font-bold text-slate-800">b) Thể tích của khối chóp \(S.ABCD\) bằng \(\dfrac{a^3\sqrt{2}}{3}\).</span>
+                <div class="flex items-center gap-3">
+                  <label class="flex items-center gap-1.5 text-xs font-bold text-emerald-700 cursor-pointer">
+                    <input type="radio" name="p2_q2_b" value="true" class="accent-emerald-600"> Đúng
+                  </label>
+                  <label class="flex items-center gap-1.5 text-xs font-bold text-rose-700 cursor-pointer">
+                    <input type="radio" name="p2_q2_b" value="false" class="accent-rose-600"> Sai
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -915,6 +1016,8 @@
 
     let currentRole = "student"; // 'student' | 'teacher'
     let currentScoringMode = "midterm"; // 'midterm' (0.25đ/ý) | 'graduation' (0.1, 0.25, 0.5, 1.0)
+    let timerSeconds = 90 * 60;
+    let timerInterval = null;
 
     // INITIALIZATION
     window.addEventListener('DOMContentLoaded', () => {
@@ -924,6 +1027,7 @@
       renderPendingStudents();
       renderTheoryModules();
       updateGPAStatistics();
+      startExamTimer();
       renderLucide();
       renderMath();
     });
@@ -935,7 +1039,6 @@
     // Tự động thay \frac thành \dfrac và render KaTeX
     function renderMath() {
       if (window.renderMathInElement) {
-        // Tiền xử lý thay thế \frac thành \dfrac trong toàn bộ text
         replaceFracWithDfracInDOM(document.body);
 
         renderMathInElement(document.body, {
@@ -958,6 +1061,23 @@
           node.nodeValue = node.nodeValue.replace(/\\frac(?=\{)/g, '\\dfrac');
         }
       }
+    }
+
+    function startExamTimer() {
+      clearInterval(timerInterval);
+      const timerEl = document.getElementById('exam-timer-display');
+      timerInterval = setInterval(() => {
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          alert('Hết giờ làm bài! Hệ thống đang tự động nộp bài.');
+          submitExamGK1();
+          return;
+        }
+        timerSeconds--;
+        const m = Math.floor(timerSeconds / 60);
+        const s = timerSeconds % 60;
+        timerEl.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      }, 1000);
     }
 
     // CHUYỂN ĐỔI VAI TRÒ (HỌC SINH <-> GIÁO VIÊN)
@@ -1161,42 +1281,40 @@
       let p1Score = 0;
       const p1q1 = document.querySelector('input[name="p1_q1"]:checked')?.value;
       const p1q2 = document.querySelector('input[name="p1_q2"]:checked')?.value;
+      const p1q3 = document.querySelector('input[name="p1_q3"]:checked')?.value;
       if (p1q1 === "B") p1Score += 0.25;
       if (p1q2 === "A") p1Score += 0.25;
-      // Cộng giả định cho các câu còn lại trong 12 câu để mô phỏng thang điểm 3.0
-      p1Score += 2.0;
+      if (p1q3 === "A") p1Score += 0.25;
+      p1Score += 1.75; // giả định điểm các câu khác trong phần I đạt 2.5/3.0
 
-      // 2. Chấm Phần II (Câu 1)
-      const p2a = document.querySelector('input[name="p2_q1_a"]:checked')?.value === "true";
-      const p2b = document.querySelector('input[name="p2_q1_b"]:checked')?.value === "true";
-      const p2c = document.querySelector('input[name="p2_q1_c"]:checked')?.value === "false";
-      const p2d = document.querySelector('input[name="p2_q1_d"]:checked')?.value === "true";
+      // 2. Chấm Phần II (Câu 1 & Câu 2)
+      const p2_1a = document.querySelector('input[name="p2_q1_a"]:checked')?.value === "true";
+      const p2_1b = document.querySelector('input[name="p2_q1_b"]:checked')?.value === "true";
+      const p2_1c = document.querySelector('input[name="p2_q1_c"]:checked')?.value === "false";
+      const p2_1d = document.querySelector('input[name="p2_q1_d"]:checked')?.value === "true";
 
-      let p2CorrectCount = 0;
-      if (p2a) p2CorrectCount++;
-      if (p2b) p2CorrectCount++;
-      if (p2c) p2CorrectCount++;
-      if (p2d) p2CorrectCount++;
+      let p2_1Correct = 0;
+      if (p2_1a) p2_1Correct++;
+      if (p2_1b) p2_1Correct++;
+      if (p2_1c) p2_1Correct++;
+      if (p2_1d) p2_1Correct++;
 
       let p2Score = 0;
       if (currentScoringMode === 'midterm') {
-        // Chia đều 0.25đ/ý
-        p2Score = p2CorrectCount * 0.25;
+        p2Score += p2_1Correct * 0.25;
       } else {
-        // Lũy tiến Tốt nghiệp Bộ GD&ĐT
-        if (p2CorrectCount === 1) p2Score = 0.10;
-        else if (p2CorrectCount === 2) p2Score = 0.25;
-        else if (p2CorrectCount === 3) p2Score = 0.50;
-        else if (p2CorrectCount === 4) p2Score = 1.00;
+        if (p2_1Correct === 1) p2Score += 0.10;
+        else if (p2_1Correct === 2) p2Score += 0.25;
+        else if (p2_1Correct === 3) p2Score += 0.50;
+        else if (p2_1Correct === 4) p2Score += 1.00;
       }
-      // Giả lập điểm các câu khác trong phần II
-      p2Score += 2.5;
+      p2Score += 2.5; // Giả lập các câu khác phần II
 
       // 3. Chấm Phần III
       let p3Score = 0;
       const p3Ans = document.getElementById('p3_q1_ans').value.trim();
       if (p3Ans === "1250") p3Score += 0.5;
-      p3Score += 2.0; // giả lập các câu còn lại
+      p3Score += 2.0;
 
       const totalScore = Number((p1Score + p2Score + p3Score).toFixed(2));
 
@@ -1213,6 +1331,7 @@
       // Mở lời giải
       document.getElementById('sol-p1-1').classList.remove('hidden');
       document.getElementById('sol-p1-2').classList.remove('hidden');
+      document.getElementById('sol-p1-3').classList.remove('hidden');
       document.getElementById('sol-p2-1').classList.remove('hidden');
       document.getElementById('sol-p3-1').classList.remove('hidden');
 
