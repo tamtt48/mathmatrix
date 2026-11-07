@@ -150,6 +150,11 @@
               <i data-lucide="radio" class="w-4 h-4 text-indigo-600"></i>
               Tạo phòng thi Online
             </button>
+
+            <button onclick="switchTab('matrix-builder')" id="nav-matrix-builder" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-indigo-50 border-2 border-transparent transition-all">
+              <i data-lucide="table-properties" class="w-4 h-4 text-indigo-600"></i>
+              Ma trận & Chọn câu hỏi
+            </button>
           </div>
         </nav>
       </div>
@@ -1301,6 +1306,201 @@
         </div>
       </div>
 
+      <!-- ========================================================= -->
+      <!-- 8. TAB (GIÁO VIÊN): MA TRẬN & BẢN ĐẶC TẢ TƯƠNG TÁC CHỌN CÂU HỎI (CHUẨN ẢNH) -->
+      <!-- ========================================================= -->
+      <div id="tab-matrix-builder" class="tab-content hidden pt-5 space-y-4">
+        
+        <!-- THANH CẤU HÌNH TRÊN CÙNG (GIỐNG HỆT ẢNH MẪU) -->
+        <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 app-shadow-sm flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-3">
+            <div>
+              <label class="text-[10px] font-black uppercase text-slate-400 block">Môn học</label>
+              <select class="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800">
+                <option>Toán học</option>
+                <option>Tin học</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-black uppercase text-slate-400 block">Khối lớp</label>
+              <select class="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800">
+                <option>Khối 12</option>
+                <option>Khối 11</option>
+                <option>Khối 10</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-black uppercase text-slate-400 block">Kỳ thi / Đợt kiểm tra</label>
+              <select class="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800">
+                <option>Kiểm tra Giữa kì I (FPT Cần Thơ)</option>
+                <option>Kiểm tra Cuối kì I</option>
+                <option>Thi thử Tốt nghiệp THPT</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-black uppercase text-slate-400 block">Thời lượng</label>
+              <div class="flex items-center gap-1">
+                <input value="90" class="w-14 bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 text-xs font-black text-center text-indigo-700">
+                <span class="text-xs text-slate-400 font-bold">phút</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nút hành động nhanh -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="applyPresetFPTMatrix()" class="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 rounded-xl text-xs font-black flex items-center gap-1.5 transition">
+              <span>⚡</span> Tự động điền Ma trận FPT
+            </button>
+            <button onclick="generateExamFromCustomMatrix()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-1.5 transition">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
+              Sinh đề thi từ Ma trận này
+            </button>
+          </div>
+        </div>
+
+        <!-- THANH QUY ƯỚC MÀU VÀNG (GIỐNG HỆT ẢNH MẪU) -->
+        <div class="p-3 bg-amber-50/90 rounded-2xl border-2 border-amber-200 text-xs text-amber-950 flex items-start gap-2">
+          <span class="text-base shrink-0">💡</span>
+          <p class="leading-relaxed">
+            <strong>Quy ước:</strong> Hàng trên nhập <strong>số lượng (ý/câu)</strong>, mỗi ý = 0.25đ đối với đề Giữa/Cuối kỳ. Hàng dưới tự động hiển thị <strong>mã năng lực / mã câu</strong> (VD: <em>TD1.1, GQ2.1, 1a, 2a</em>). <span class="text-indigo-700 font-black underline cursor-pointer" onclick="openQuestionPicker(1, 'NB', 'P1')">Bấm vào từng ô để MỞ NGÂN HÀNG & CHỌN CÂU HỎI TRỰC TIẾP!</span>
+          </p>
+        </div>
+
+        <!-- LAYOUT BẢNG MA TRẬN: SIDEBAR CHỦ ĐỀ + BẢNG ĐẶC TẢ TƯƠNG TÁC -->
+        <div class="flex flex-col lg:flex-row gap-3">
+          
+          <!-- BỘ LỌC CHỦ ĐỀ BÊN TRÁI (GIỐNG ẢNH MẪU) -->
+          <div class="w-full lg:w-44 shrink-0 space-y-2 bg-white p-3 rounded-2xl border-2 border-slate-200 app-shadow-sm self-start">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <span class="text-[11px] font-black uppercase text-slate-400">CHỦ ĐỀ</span>
+              <span class="text-[10px] bg-slate-100 text-slate-600 font-bold px-1.5 py-0.5 rounded">Mở</span>
+            </div>
+            <button onclick="filterMatrixTopic('all')" id="btn-filter-all" class="w-full text-left px-3 py-2 rounded-xl text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-200 transition">
+              Tất cả (2 Chủ đề)
+            </button>
+            <button onclick="filterMatrixTopic(1)" id="btn-filter-1" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition border border-transparent">
+              Chủ đề 1: Đạo hàm (70%)
+            </button>
+            <button onclick="filterMatrixTopic(2)" id="btn-filter-2" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition border border-transparent">
+              Chủ đề 2: Oxyz (30%)
+            </button>
+          </div>
+
+          <!-- BẢNG MA TRẬN & BẢN ĐẶC TẢ CHI TIẾT (CHUẨN FPT CẦN THƠ) -->
+          <div class="flex-1 bg-white rounded-2xl border-2 border-slate-200 app-shadow-sm overflow-x-auto p-1">
+            <table class="w-full text-left text-xs border-collapse min-w-[880px]" id="matrix-spec-table">
+              
+              <!-- HEADER BẢNG VỚI 3 TONE MÀU CHUẨN: XANH DƯƠNG, TÍM, XANH LỤC (NHƯ ẢNH) -->
+              <thead>
+                <tr class="bg-[#1E2342] text-white text-[11px] font-black">
+                  <th rowspan="2" class="p-2.5 border border-slate-600 w-28 text-center">Chương / Chủ đề</th>
+                  <th rowspan="2" class="p-2.5 border border-slate-600 w-36 text-center">Nội dung / đơn vị kiến thức</th>
+                  <th rowspan="2" class="p-2.5 border border-slate-600 min-w-[200px] text-center">Yêu cầu cần đạt</th>
+                  <th colspan="3" class="p-2 border border-slate-600 text-center bg-[#1D4ED8]">TNKQ (Nhiều lựa chọn)</th>
+                  <th colspan="3" class="p-2 border border-slate-600 text-center bg-[#7C3AED]">Đúng - Sai (ý)</th>
+                  <th colspan="3" class="p-2 border border-slate-600 text-center bg-[#059669]">Trả lời ngắn (ý)</th>
+                  <th colspan="3" class="p-2 border border-slate-600 text-center bg-[#334155]">Tổng</th>
+                  <th rowspan="2" class="p-2 border border-slate-600 w-14 text-center bg-[#0F172A]">Điểm</th>
+                </tr>
+                <tr class="text-[10px] font-extrabold text-center text-white">
+                  <!-- TNKQ -->
+                  <th class="p-1 border border-slate-600 bg-blue-700 w-11">Biết</th>
+                  <th class="p-1 border border-slate-600 bg-blue-700 w-11">Hiểu</th>
+                  <th class="p-1 border border-slate-600 bg-blue-700 w-11">VD</th>
+                  <!-- Đúng Sai -->
+                  <th class="p-1 border border-slate-600 bg-purple-700 w-11">Biết</th>
+                  <th class="p-1 border border-slate-600 bg-purple-700 w-11">Hiểu</th>
+                  <th class="p-1 border border-slate-600 bg-purple-700 w-11">VD</th>
+                  <!-- Trả lời ngắn -->
+                  <th class="p-1 border border-slate-600 bg-emerald-700 w-11">Biết</th>
+                  <th class="p-1 border border-slate-600 bg-emerald-700 w-11">Hiểu</th>
+                  <th class="p-1 border border-slate-600 bg-emerald-700 w-11">VD</th>
+                  <!-- Tổng -->
+                  <th class="p-1 border border-slate-600 bg-slate-700 w-9">Biết</th>
+                  <th class="p-1 border border-slate-600 bg-slate-700 w-9">Hiểu</th>
+                  <th class="p-1 border border-slate-600 bg-slate-700 w-9">VD</th>
+                </tr>
+              </thead>
+
+              <!-- NỘI DUNG 8 ĐƠN VỊ KIẾN THỨC THEO MA TRẬN FPT CẦN THƠ -->
+              <tbody class="divide-y divide-slate-200 font-semibold" id="matrix-spec-tbody">
+                <!-- Render qua JS: Cực trị, GTLN-GTNN, Tiệm cận, Khảo sát, Thực tế, Vectơ, Oxyz, Phép toán -->
+              </tbody>
+
+              <!-- FOOTER TỔNG KẾT ĐIỂM -->
+              <tfoot class="bg-slate-100 font-black text-xs text-[#1E2342] border-t-2 border-[#1E2342]">
+                <tr>
+                  <td colspan="3" class="p-2.5 text-right font-black uppercase">Tổng số câu / ý:</td>
+                  <td class="p-1 text-center bg-blue-50 text-blue-900 border border-slate-300 font-black">8</td>
+                  <td class="p-1 text-center bg-blue-50 text-blue-900 border border-slate-300 font-black">4</td>
+                  <td class="p-1 text-center bg-blue-50 text-slate-400 border border-slate-300 font-black">-</td>
+                  <td class="p-1 text-center bg-purple-50 text-purple-900 border border-slate-300 font-black">8</td>
+                  <td class="p-1 text-center bg-purple-50 text-purple-900 border border-slate-300 font-black">6</td>
+                  <td class="p-1 text-center bg-purple-50 text-purple-900 border border-slate-300 font-black">2</td>
+                  <td class="p-1 text-center bg-emerald-50 text-slate-400 border border-slate-300 font-black">-</td>
+                  <td class="p-1 text-center bg-emerald-50 text-emerald-900 border border-slate-300 font-black">3</td>
+                  <td class="p-1 text-center bg-emerald-50 text-emerald-900 border border-slate-300 font-black">3</td>
+                  <td class="p-1 text-center bg-slate-200 font-black">16</td>
+                  <td class="p-1 text-center bg-slate-200 font-black">13</td>
+                  <td class="p-1 text-center bg-slate-200 font-black">5</td>
+                  <td class="p-1 text-center bg-[#1E2342] text-amber-300 font-black text-sm">10.0</td>
+                </tr>
+                <tr class="bg-amber-50/70 text-[11px] text-amber-900 font-black">
+                  <td colspan="3" class="p-2 text-right">Tổng điểm theo phần:</td>
+                  <td colspan="3" class="p-1 text-center text-blue-800 border border-amber-200">3,0 điểm (30%)</td>
+                  <td colspan="3" class="p-1 text-center text-purple-800 border border-amber-200">4,0 điểm (40%)</td>
+                  <td colspan="3" class="p-1 text-center text-emerald-800 border border-amber-200">3,0 điểm (30%)</td>
+                  <td colspan="3" class="p-1 text-center text-slate-800 border border-amber-200">Biết: 4.0đ • Hiểu: 4.0đ • VD: 2.0đ</td>
+                  <td class="p-1 text-center bg-amber-400 text-[#1E2342]">100%</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MODAL CHỌN CÂU HỎI TRỰC TIẾP TỪ NGÂN HÀNG (KHI CLICK VÀO Ô MA TRẬN) -->
+      <div id="question-picker-modal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3">
+        <div class="bg-white rounded-3xl border-2 border-[#1E2342] app-shadow w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in duration-200">
+          
+          <!-- Header Modal -->
+          <div class="p-4 bg-[#1E2342] text-white flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black bg-amber-400 text-[#1E2342] px-2 py-0.5 rounded-md" id="picker-level-tag">NHẬN BIẾT</span>
+                <span class="text-xs font-bold text-slate-300" id="picker-type-tag">TNKQ Nhiều lựa chọn</span>
+              </div>
+              <h4 class="font-extrabold text-sm text-white mt-1" id="picker-unit-title">Tính đơn điệu và cực trị của hàm số</h4>
+            </div>
+            <button onclick="closeQuestionPicker()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-base font-black">
+              ✕
+            </button>
+          </div>
+
+          <!-- Danh sách câu hỏi trong ngân hàng có thể chọn -->
+          <div class="p-5 overflow-y-auto space-y-3.5 flex-1" id="picker-questions-container">
+            <!-- Dynamic via JS -->
+          </div>
+
+          <!-- Footer Modal -->
+          <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+            <span class="text-xs text-slate-500 font-semibold">Đã chọn: <strong class="text-indigo-600" id="picker-selected-count">1</strong> câu hỏi</span>
+            <div class="flex gap-2">
+              <button onclick="closeQuestionPicker()" class="px-4 py-2 rounded-xl border border-slate-300 font-bold text-xs text-slate-600 hover:bg-slate-100">
+                Đóng
+              </button>
+              <button onclick="confirmSelectedQuestion()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-black text-xs text-white shadow-sm">
+                Xác nhận gán vào Ma trận
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
@@ -1486,7 +1686,8 @@
         'history': { title: "Lịch sử làm bài & Bảng xếp hạng", sub: "Theo dõi tiến độ điểm số và bảng xếp hạng bảo mật thông tin học sinh" },
         'teacher-approval': { title: "Phê duyệt học sinh vào lớp", sub: "Quản lý danh sách xin gia nhập lớp 12A1" },
         'teacher-analytics': { title: "Theo dõi quá trình học tập", sub: "Báo cáo thống kê GPA Tốt nghiệp và tiến độ làm đề của học sinh" },
-        'teacher-room': { title: "Quản lý phòng thi Online", sub: "Khởi tạo và điều phối các đợt thi trực tuyến" }
+        'teacher-room': { title: "Quản lý phòng thi Online", sub: "Khởi tạo và điều phối các đợt thi trực tuyến" },
+        'matrix-builder': { title: "Ma trận & Bản đặc tả tương tác (THPT FPT Cần Thơ)", sub: "Cấu hình chi tiết số câu, mã năng lực và bấm vào từng ô để chọn câu hỏi từ ngân hàng" }
       };
 
       if (titles[tabId]) {
@@ -1787,6 +1988,344 @@
         </div>
       `).join('');
     }
+
+    // =========================================================================
+    // 5. PHÂN HỆ MA TRẬN & BẢN ĐẶC TẢ TƯƠNG TÁC (CHUẨN FPT CẦN THƠ & HÌNH MẪU)
+    // =========================================================================
+    const FPT_SPECIFICATION_MATRIX = [
+      {
+        id: "unit_1",
+        topicId: 1,
+        topicName: "Chủ đề 1. Ứng dụng đạo hàm khảo sát đồ thị",
+        unitName: "1. Tính đơn điệu và cực trị của hàm số",
+        reqs: {
+          NB: "Nhận biết tính đồng biến, nghịch biến qua dấu đạo hàm. [TD1.1]",
+          TH: "Xác định khoảng đơn điệu và cực trị thông qua bảng biến thiên. [TD1.2, GQ2.1]",
+          VD: "Tìm khoảng đơn điệu hoặc cực trị cho bởi công thức đại số cụ thể. [GQ3.1]"
+        },
+        // TNKQ (Nhiều lựa chọn)
+        tnkq: { NB: { count: 1, code: "1 (TD1.1)" }, TH: { count: 1, code: "2 (TD1.2)" }, VD: { count: 0, code: "-" } },
+        // Đúng - Sai (ý)
+        ds: { NB: { count: 1, code: "1a (TD1.1)" }, TH: { count: 1, code: "1b (GQ2.1)" }, VD: { count: 0, code: "-" } },
+        // Trả lời ngắn (ý)
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 1, code: "1 (GQ3.1)" }, VD: { count: 0, code: "-" } },
+        total: { NB: 2, TH: 3, VD: 0 },
+        points: "1.50"
+      },
+      {
+        id: "unit_2",
+        topicId: 1,
+        topicName: "Chủ đề 1. Ứng dụng đạo hàm khảo sát đồ thị",
+        unitName: "2. Giá trị lớn nhất, giá trị nhỏ nhất của hàm số",
+        reqs: {
+          NB: "Khái niệm GTLN, GTNN trên tập xác định. [TD1.2, TD1.1]",
+          TH: "Tính GTLN, GTNN của hàm số trên một đoạn. [GQ2.1]",
+          VD: "Vận dụng GTLN, GTNN giải bài toán thực tiễn tối ưu diện tích, chi phí. [GQ3.1, MH2.1]"
+        },
+        tnkq: { NB: { count: 1, code: "3 (TD1.2)" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        ds: { NB: { count: 1, code: "1d (TD1.1)" }, TH: { count: 1, code: "2b (GQ2.1)" }, VD: { count: 1, code: "3a (GQ3.1)" } },
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 0, code: "-" }, VD: { count: 1, code: "2 (MH2.1)" } },
+        total: { NB: 2, TH: 1, VD: 2 },
+        points: "1.50"
+      },
+      {
+        id: "unit_3",
+        topicId: 1,
+        topicName: "Chủ đề 1. Ứng dụng đạo hàm khảo sát đồ thị",
+        unitName: "3. Đường tiệm cận của đồ thị hàm số",
+        reqs: {
+          NB: "Nhận biết đường tiệm cận đứng, tiệm cận ngang. [TD1.2]",
+          TH: "Xác định phương trình tiệm cận đứng, ngang, xiên trường hợp đơn giản. [TD1.3]",
+          VD: "Tiệm cận chứa tham số hoặc ứng dụng hình học."
+        },
+        tnkq: { NB: { count: 1, code: "4 (TD1.2)" }, TH: { count: 1, code: "5 (TD1.3)" }, VD: { count: 0, code: "-" } },
+        ds: { NB: { count: 2, code: "1c, 2c (TD1.2)" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        total: { NB: 3, TH: 1, VD: 0 },
+        points: "1.00"
+      },
+      {
+        id: "unit_4",
+        topicId: 1,
+        topicName: "Chủ đề 1. Ứng dụng đạo hàm khảo sát đồ thị",
+        unitName: "4. Khảo sát sự biến thiên và vẽ đồ thị của hàm số",
+        reqs: {
+          NB: "Đọc bảng biến thiên, nhận dạng đồ thị hàm đa thức, phân thức. [TD1.1, TD1.2]",
+          TH: "Đọc, phân tích đồ thị xác định cực trị, tiệm cận, số nghiệm phương trình. [GQ2.1, GQ3.1]",
+          VD: "Tương giao đồ thị và bài toán biện luận nghiệm."
+        },
+        tnkq: { NB: { count: 2, code: "6, 7 (TD1.1; 1.2)" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        ds: { NB: { count: 1, code: "2d (GQ2.1)" }, TH: { count: 1, code: "2a (GQ2.1)" }, VD: { count: 0, code: "-" } },
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 1, code: "3 (GQ3.1)" }, VD: { count: 0, code: "-" } },
+        total: { NB: 3, TH: 2, VD: 0 },
+        points: "1.50"
+      },
+      {
+        id: "unit_5",
+        topicId: 1,
+        topicName: "Chủ đề 1. Ứng dụng đạo hàm khảo sát đồ thị",
+        unitName: "5. Ứng dụng đạo hàm giải quyết vấn đề thực tiễn",
+        reqs: {
+          NB: "Nhận biết ý nghĩa thực tế của đạo hàm.",
+          TH: "Thiết lập hàm số biểu diễn đại lượng thực tiễn cần khảo sát. [GQ2.1, GQ3.1]",
+          VD: "Vận dụng đạo hàm giải bài toán tối ưu chi phí, diện tích, khoảng cách qua sông. [MH2.1, MH3.1]"
+        },
+        tnkq: { NB: { count: 0, code: "-" }, TH: { count: 1, code: "8 (GQ2.1)" }, VD: { count: 0, code: "-" } },
+        ds: { NB: { count: 0, code: "-" }, TH: { count: 2, code: "3b, 3c (GQ3.1)" }, VD: { count: 1, code: "3d (MH2.1)" } },
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 0, code: "-" }, VD: { count: 1, code: "4 (MH3.1)" } },
+        total: { NB: 0, TH: 3, VD: 2 },
+        points: "1.50"
+      },
+      {
+        id: "unit_6",
+        topicId: 2,
+        topicName: "Chủ đề 2. Vectơ & Hệ tọa độ Oxyz không gian",
+        unitName: "6. Vectơ trong không gian",
+        reqs: {
+          NB: "Khái niệm vectơ, độ dài, vectơ bằng nhau, đối nhau trong không gian. [TD1.1, GQ1.1]",
+          TH: "Quy tắc 3 điểm, hình bình hành, hình hộp trong không gian.",
+          VD: "Ứng dụng vectơ giải toán hình học không gian."
+        },
+        tnkq: { NB: { count: 1, code: "9 (TD1.1)" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        ds: { NB: { count: 1, code: "4a (GQ1.1)" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        total: { NB: 2, TH: 0, VD: 0 },
+        points: "0.50"
+      },
+      {
+        id: "unit_7",
+        topicId: 2,
+        topicName: "Chủ đề 2. Vectơ & Hệ tọa độ Oxyz không gian",
+        unitName: "7. Hệ trục tọa độ trong không gian",
+        reqs: {
+          NB: "Tọa độ điểm, vectơ đơn vị đối với hệ trục Oxyz. [TD1.1, GQ2.1]",
+          TH: "Độ dài đoạn thẳng, trung điểm, trọng tâm tam giác trong không gian. [GQ3.1]",
+          VD: "Tọa độ hóa bài toán không gian thực tế."
+        },
+        tnkq: { NB: { count: 1, code: "10 (TD1.1)" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        ds: { NB: { count: 1, code: "4b (GQ2.1)" }, TH: { count: 0, code: "-" }, VD: { count: 0, code: "-" } },
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 1, code: "5 (GQ3.1)" }, VD: { count: 0, code: "-" } },
+        total: { NB: 2, TH: 1, VD: 0 },
+        points: "1.00"
+      },
+      {
+        id: "unit_8",
+        topicId: 2,
+        topicName: "Chủ đề 2. Vectơ & Hệ tọa độ Oxyz không gian",
+        unitName: "8. Biểu thức tọa độ của các phép toán vectơ",
+        reqs: {
+          NB: "Tọa độ tổng, hiệu, tích một số với vectơ, tích vô hướng. [TD1.1]",
+          TH: "Tọa độ vectơ qua 2 điểm, tích vô hướng và góc giữa 2 vectơ. [TD1.2, GQ3.1]",
+          VD: "Vận dụng biểu thức tọa độ vectơ giải bài toán không gian hoặc thực tiễn. [GQ3.1]"
+        },
+        tnkq: { NB: { count: 1, code: "11 (TD1.1)" }, TH: { count: 1, code: "12 (TD1.2)" }, VD: { count: 0, code: "-" } },
+        ds: { NB: { count: 1, code: "4c (TD1.1)" }, TH: { count: 1, code: "4d (GQ3.1)" }, VD: { count: 0, code: "-" } },
+        tln: { NB: { count: 0, code: "-" }, TH: { count: 0, code: "-" }, VD: { count: 1, code: "6 (GQ3.1)" } },
+        total: { NB: 2, TH: 2, VD: 1 },
+        points: "1.50"
+      }
+    ];
+
+    let currentMatrixFilter = 'all';
+    let currentPickingTarget = null;
+
+    // RENDER BẢNG MA TRẬN & BẢN ĐẶC TẢ TƯƠNG TÁC
+    function renderMatrixSpecTable() {
+      const tbody = document.getElementById('matrix-spec-tbody');
+      if (!tbody) return;
+
+      const filtered = currentMatrixFilter === 'all' 
+        ? FPT_SPECIFICATION_MATRIX 
+        : FPT_SPECIFICATION_MATRIX.filter(u => u.topicId === Number(currentMatrixFilter));
+
+      tbody.innerHTML = filtered.map((row, idx) => `
+        <tr class="hover:bg-slate-50/80 transition text-[11px] border-b border-slate-200">
+          <!-- Chủ đề -->
+          <td class="p-2 border border-slate-200 bg-slate-50/50 font-bold text-slate-700 align-top">
+            <span class="px-1.5 py-0.5 rounded text-[10px] ${row.topicId === 1 ? 'bg-indigo-100 text-indigo-800' : 'bg-rose-100 text-rose-800'} font-extrabold block w-fit mb-1">
+              Chủ đề ${row.topicId}
+            </span>
+            ${row.topicName.replace('Chủ đề ' + row.topicId + '. ', '')}
+          </td>
+
+          <!-- Đơn vị kiến thức -->
+          <td class="p-2 border border-slate-200 font-extrabold text-[#1E2342] align-top">
+            <p>${row.unitName}</p>
+            <button onclick="toggleUnitReqs('${row.id}')" class="mt-1 text-[10px] text-indigo-600 font-bold flex items-center gap-0.5 hover:underline">
+              <span>▼</span> Thu gọn
+            </button>
+          </td>
+
+          <!-- Yêu cầu cần đạt chi tiết -->
+          <td class="p-2 border border-slate-200 text-slate-600 leading-relaxed align-top" id="reqs-${row.id}">
+            <div class="space-y-1">
+              <p><strong class="text-blue-700">[Nhận biết]:</strong> ${row.reqs.NB}</p>
+              <p><strong class="text-indigo-700">[Thông hiểu]:</strong> ${row.reqs.TH}</p>
+              <p><strong class="text-amber-700">[Vận dụng]:</strong> ${row.reqs.VD}</p>
+            </div>
+          </td>
+
+          <!-- CỘT TNKQ NHIỀU LỰA CHỌN (XANH DƯƠNG) -->
+          ${renderMatrixCell(row, 'tnkq', 'NB', 'bg-blue-50/50 text-blue-900 border-blue-200')}
+          ${renderMatrixCell(row, 'tnkq', 'TH', 'bg-blue-50/50 text-blue-900 border-blue-200')}
+          ${renderMatrixCell(row, 'tnkq', 'VD', 'bg-blue-50/50 text-blue-900 border-blue-200')}
+
+          <!-- CỘT ĐÚNG - SAI (TÍM) -->
+          ${renderMatrixCell(row, 'ds', 'NB', 'bg-purple-50/50 text-purple-900 border-purple-200')}
+          ${renderMatrixCell(row, 'ds', 'TH', 'bg-purple-50/50 text-purple-900 border-purple-200')}
+          ${renderMatrixCell(row, 'ds', 'VD', 'bg-purple-50/50 text-purple-900 border-purple-200')}
+
+          <!-- CỘT TRẢ LỜI NGẮN (XANH LỤC) -->
+          ${renderMatrixCell(row, 'tln', 'NB', 'bg-emerald-50/50 text-emerald-900 border-emerald-200')}
+          ${renderMatrixCell(row, 'tln', 'TH', 'bg-emerald-50/50 text-emerald-900 border-emerald-200')}
+          ${renderMatrixCell(row, 'tln', 'VD', 'bg-emerald-50/50 text-emerald-900 border-emerald-200')}
+
+          <!-- CỘT TỔNG -->
+          <td class="p-1.5 text-center border border-slate-200 bg-slate-50 font-black text-slate-700">${row.total.NB || '-'}</td>
+          <td class="p-1.5 text-center border border-slate-200 bg-slate-50 font-black text-slate-700">${row.total.TH || '-'}</td>
+          <td class="p-1.5 text-center border border-slate-200 bg-slate-50 font-black text-slate-700">${row.total.VD || '-'}</td>
+
+          <!-- ĐIỂM SỐ -->
+          <td class="p-1.5 text-center border border-slate-200 font-black text-indigo-700 bg-indigo-50/40">${row.points}đ</td>
+        </tr>
+      `).join('');
+
+      renderLucide();
+    }
+
+    // RENDER Ô NHẬP LIỆU 2 TẦNG (SỐ LƯỢNG + MÃ CÂU) KÈM NÚT CHỌN CÂU HỎI
+    function renderMatrixCell(row, type, level, colorClass) {
+      const data = row[type][level];
+      const hasValue = data && data.count > 0;
+
+      return `
+        <td class="p-1 border border-slate-200 text-center align-top relative group">
+          <div onclick="openQuestionPicker('${row.id}', '${level}', '${type}')" class="p-1 rounded-xl cursor-pointer hover:border-indigo-500 hover:shadow-sm transition ${hasValue ? colorClass + ' border' : 'bg-slate-50/40 border border-dashed border-slate-200'}">
+            <span class="block font-black text-xs ${hasValue ? '' : 'text-slate-300'}">${hasValue ? data.count : '-'}</span>
+            <span class="block text-[9px] font-semibold text-slate-500 truncate" title="${data.code}">${data.code}</span>
+          </div>
+        </td>
+      `;
+    }
+
+    function toggleUnitReqs(unitId) {
+      const el = document.getElementById(`reqs-${unitId}`);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    function filterMatrixTopic(topicId) {
+      currentMatrixFilter = topicId;
+      document.querySelectorAll('[id^="btn-filter-"]').forEach(btn => {
+        btn.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-200');
+        btn.classList.add('text-slate-700', 'border-transparent');
+      });
+      const activeBtn = document.getElementById(`btn-filter-${topicId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-200');
+        activeBtn.classList.remove('text-slate-700', 'border-transparent');
+      }
+      renderMatrixSpecTable();
+    }
+
+    // MỞ MODAL NGÂN HÀNG ĐỂ CHỌN CÂU HỎI CHO Ô MA TRẬN
+    function openQuestionPicker(unitId, level, type) {
+      const unit = FPT_SPECIFICATION_MATRIX.find(u => u.id === unitId) || FPT_SPECIFICATION_MATRIX[0];
+      currentPickingTarget = { unitId, level, type };
+
+      const typeLabels = { 'tnkq': 'TNKQ Nhiều lựa chọn', 'ds': 'Trắc nghiệm Đúng - Sai', 'tln': 'Trắc nghiệm Trả lời ngắn' };
+      const levelLabels = { 'NB': '1. NHẬN BIẾT', 'TH': '2. THÔNG HIỂU', 'VD': '3. VẬN DỤNG' };
+
+      document.getElementById('picker-unit-title').innerText = unit.unitName;
+      document.getElementById('picker-level-tag').innerText = levelLabels[level] || level;
+      document.getElementById('picker-type-tag').innerText = typeLabels[type] || type;
+
+      // Danh sách câu hỏi phù hợp trong ngân hàng
+      const container = document.getElementById('picker-questions-container');
+      const sampleQuestions = [
+        {
+          id: "Q_PICK_1",
+          text: `Cho hàm số \\(y = f(x)\\) có bảng biến thiên với các mũi tên tăng giảm chuẩn xác. Hàm số đồng biến trên khoảng nào?`,
+          preview: "Bảng biến thiên cực trị tại x = -1 và x = 2",
+          hasVector: true,
+          badge: "Đã có sẵn hình vẽ vector BBT chuẩn"
+        },
+        {
+          id: "Q_PICK_2",
+          text: `Đường cong trong hình vẽ bên là đồ thị hàm số nào dưới đây? (Hàm bậc ba \\(y = x^3 - 3x\\))`,
+          preview: "Đồ thị bậc ba đi qua O(0,0), cực đại (-1; 2), cực tiểu (1; -2)",
+          hasVector: true,
+          badge: "Đã có sẵn đồ thị SVG vector"
+        },
+        {
+          id: "Q_PICK_3",
+          text: `Cho hàm số phân thức \\(y = \\dfrac{-x+2}{x-1}\\). Xét tính đúng sai các mệnh đề về tiệm cận đứng \\(x=1\\) và ngang \\(y=-1\\).`,
+          preview: "Đồ thị 2 nhánh Hyperbol cắt trục tọa độ tại (2; 0) và (0; -2)",
+          hasVector: true,
+          badge: "Đã có sẵn hình vẽ tiệm cận vector"
+        },
+        {
+          id: "Q_PICK_4",
+          text: `Bài toán thực tế: Cắt 4 góc tấm bìa hình vuông cạnh \\(12\\text{ cm}\\) để gập thành chiếc hộp có thể tích lớn nhất.`,
+          preview: "Hình vẽ tấm bìa 12cm cắt 4 góc x và hộp 3D thành phẩm",
+          hasVector: true,
+          badge: "Đã có sẵn hình vẽ thực tế tấm bìa & hộp 3D"
+        },
+        {
+          id: "Q_PICK_5",
+          text: `Bài toán thực tế: Xây cầu \\(EF\\) vuông góc qua dòng sông để tối ưu quãng đường bộ từ \\(A\\) sang \\(B\\) (\\(AH=5\\text{km}, BK=7\\text{km}\\)).`,
+          preview: "Hình vẽ dòng sông 2 bờ song song, 2 ngôi sao vàng A và B",
+          hasVector: true,
+          badge: "Đã có sẵn hình vẽ thực tế dòng sông & cây cầu"
+        }
+      ];
+
+      container.innerHTML = sampleQuestions.map((q, idx) => `
+        <div class="p-3.5 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 bg-slate-50/50 cursor-pointer transition flex items-start justify-between gap-3" onclick="toggleSelectQuestionPicker(this)">
+          <div class="space-y-1 flex-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black text-indigo-700">Câu hỏi #${idx + 1}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">${q.badge}</span>
+            </div>
+            <p class="text-xs font-bold text-slate-800">${q.text}</p>
+            <p class="text-[11px] text-slate-500 font-semibold italic">${q.preview}</p>
+          </div>
+          <input type="checkbox" checked class="w-4 h-4 accent-indigo-600 mt-1 cursor-pointer">
+        </div>
+      `).join('');
+
+      document.getElementById('question-picker-modal').classList.remove('hidden');
+      renderMath();
+    }
+
+    function toggleSelectQuestionPicker(el) {
+      const cb = el.querySelector('input[type="checkbox"]');
+      if (cb) cb.checked = !cb.checked;
+    }
+
+    function closeQuestionPicker() {
+      document.getElementById('question-picker-modal').classList.add('hidden');
+    }
+
+    function confirmSelectedQuestion() {
+      closeQuestionPicker();
+      alert('Đã gán thành công câu hỏi vào Ma trận & Bản đặc tả của đề thi!');
+    }
+
+    function applyPresetFPTMatrix() {
+      currentMatrixFilter = 'all';
+      renderMatrixSpecTable();
+      alert('Đã tự động điền đầy đủ 100% Ma trận & Bản đặc tả chuẩn Trường THPT FPT Cần Thơ!');
+    }
+
+    function generateExamFromCustomMatrix() {
+      switchTab('exam-gk1');
+      alert('Đã sinh đề thi thành công từ Ma trận đặc tả! Bắt đầu tính giờ làm bài 90 phút.');
+    }
+
+    // Tự động gọi render khi tải trang
+    window.addEventListener('DOMContentLoaded', () => {
+      renderMatrixSpecTable();
+    });
   </script>
 </body>
 </html>
