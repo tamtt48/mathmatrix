@@ -155,6 +155,14 @@
               <i data-lucide="table-properties" class="w-4 h-4 text-indigo-600"></i>
               Ma trận & Chọn câu hỏi
             </button>
+
+            <button onclick="switchTab('teacher-bank')" id="nav-teacher-bank" class="tab-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-indigo-50 border-2 border-transparent transition-all">
+              <span class="flex items-center gap-3">
+                <i data-lucide="database" class="w-4 h-4 text-indigo-600"></i>
+                Kho đề & Đặt mã chuẩn
+              </span>
+              <span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-1.5 py-0.5 rounded-md" id="bank-total-badge">12</span>
+            </button>
           </div>
         </nav>
       </div>
@@ -239,6 +247,31 @@
               <span class="text-xs font-bold text-amber-800">/ 10.0</span>
             </div>
             <p class="text-[10px] text-amber-700 font-semibold mt-1">Chỉ tính khi luyện đề Tốt nghiệp</p>
+          </div>
+        </div>
+
+        <!-- BANNER SINH ĐỀ NGẪU NHIÊN TỪ MA TRẬN GIÁO VIÊN -->
+        <div class="bg-gradient-to-r from-indigo-50 via-purple-50 to-amber-50 p-5 rounded-3xl border-2 border-[#1E2342] app-shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black bg-[#1E2342] text-amber-300 px-2.5 py-0.5 rounded-lg">TÍNH NĂNG THÔNG MINH</span>
+              <span class="text-xs font-bold text-indigo-700 bg-white px-2 py-0.5 rounded-md border border-indigo-200">Kho đề: 12 câu gán mã chuẩn</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-black text-[#1E2342]">Sinh đề ngẫu nhiên theo Ma trận của Thầy/Cô</h3>
+            <p class="text-xs text-slate-600 leading-relaxed max-w-2xl">
+              Hệ thống tự động lọc câu hỏi theo các mã nhãn: <code class="bg-white px-1 py-0.5 rounded border text-indigo-800 font-bold">_NB_</code>, <code class="bg-white px-1 py-0.5 rounded border text-indigo-800 font-bold">_TH_</code>, <code class="bg-white px-1 py-0.5 rounded border text-indigo-800 font-bold">_VD_</code> thuộc các chuyên đề <code class="bg-white px-1 py-0.5 rounded border font-bold text-rose-700">(KSHS)</code>, <code class="bg-white px-1 py-0.5 rounded border font-bold text-blue-700">(Oxyz)</code>, <code class="bg-white px-1 py-0.5 rounded border font-bold text-amber-700">(Xs)</code> và tự hiểu định dạng <strong>3 Phần</strong> để sinh đề thi mới!
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-2 shrink-0 w-full md:w-auto">
+            <select id="select-random-matrix" class="bg-white border-2 border-slate-300 rounded-2xl px-3 py-2 text-xs font-bold text-[#1E2342] focus:outline-none focus:border-indigo-500">
+              <option value="fpt_gk1">Ma trận Giữa kỳ 1 Toán 12 (FPT Cần Thơ)</option>
+              <option value="tot_nghiep">Ma trận Luyện thi Tốt nghiệp THPT 2026</option>
+              <option value="chuyen_de">Ma trận Luyện chuyên đề KSHS + Oxyz</option>
+            </select>
+            <button onclick="startRandomExamFromMatrix()" class="bg-[#FF6542] hover:bg-[#ff512a] text-white font-black text-xs px-5 py-3 rounded-2xl shadow-[0_4px_0_0_#b83315] active:translate-y-1 transition flex items-center justify-center gap-2 whitespace-nowrap">
+              <span>🎲</span> Sinh đề ngẫu nhiên ngay
+            </button>
           </div>
         </div>
 
@@ -456,8 +489,10 @@
           </p>
         </div>
 
-        <!-- ================= PHẦN I ================= -->
-        <div class="space-y-4">
+        <!-- ================= CONTAINER ĐỀ MẪU GỐC FPT ================= -->
+        <div id="exam-default-container" class="space-y-6">
+          <!-- ================= PHẦN I ================= -->
+          <div class="space-y-4">
           <div class="bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-200 flex items-center justify-between">
             <span class="font-black text-sm text-indigo-950">PHẦN I: Câu trắc nghiệm nhiều phương án lựa chọn (12 câu - 3.0 điểm)</span>
             <span class="text-xs font-bold text-indigo-700">Mỗi câu đúng: 0.25 điểm</span>
@@ -1141,6 +1176,12 @@
             </div>
           </div>
         </div>
+        <!-- /#exam-default-container -->
+
+        <!-- ================= CONTAINER ĐỀ THI SINH NGẪU NHIÊN ================= -->
+        <div id="exam-random-container" class="hidden space-y-6">
+          <!-- Dynamic random exam will be injected here via startRandomExamFromMatrix() -->
+        </div>
 
       </div>
 
@@ -1304,6 +1345,187 @@
             🚀 Mở phòng thi Online ngay
           </button>
         </div>
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- 9. TAB (GIÁO VIÊN): KHO ĐỀ & ĐẶT MÃ CHUẨN TỰ ĐỘNG NHẬN DIỆN -->
+      <!-- ========================================================= -->
+      <div id="tab-teacher-bank" class="tab-content hidden pt-5 space-y-5">
+        
+        <!-- Banner giới thiệu cơ chế gán mã & Tự động nhận diện -->
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-3xl border-2 border-indigo-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black bg-indigo-600 text-white px-2.5 py-0.5 rounded-lg">CƠ CHẾ THÔNG MINH</span>
+              <span class="text-xs font-bold text-slate-500">Auto-Detecting Question Types</span>
+            </div>
+            <h3 class="text-lg font-black text-[#1E2342] mt-1">Kho Đề & Hệ Thống Đặt Mã Chuẩn Tự Động Nhận Diện</h3>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Thầy/Cô chỉ cần đặt mã theo mẫu: <code class="bg-white px-2 py-0.5 rounded font-black text-indigo-700 border">Câu X_MứcĐộ_(ChuyênĐề)</code> (Ví dụ: <code class="bg-white px-1.5 py-0.5 rounded font-bold text-rose-600">Câu 1_NB_(KSHS)</code>, <code class="bg-white px-1.5 py-0.5 rounded font-bold text-blue-600">Câu 2_TH_(Oxyz)</code>, <code class="bg-white px-1.5 py-0.5 rounded font-bold text-amber-600">Câu 3_VD_(Xs)</code>). Hệ thống sẽ <strong>tự động hiểu</strong> câu đó thuộc <em>Trắc nghiệm nhiều lựa chọn</em>, <em>Đúng - Sai</em>, hay <em>Trả lời ngắn</em>!
+            </p>
+          </div>
+          <button onclick="document.getElementById('add-question-box').scrollIntoView({behavior: 'smooth'})" class="px-4 py-2 bg-[#1E2342] hover:bg-black text-white font-extrabold text-xs rounded-xl shadow-sm shrink-0 transition">
+            + Soạn câu hỏi mới
+          </button>
+        </div>
+
+        <!-- 4 Thẻ KPI Kho câu hỏi -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="p-3.5 bg-white rounded-2xl border-2 border-slate-200">
+            <span class="text-[11px] font-bold text-slate-400 block">Tổng câu trong kho</span>
+            <span class="text-xl font-black text-[#1E2342]" id="stat-bank-total">12</span>
+            <span class="text-[10px] text-emerald-600 font-bold block mt-0.5">Sẵn sàng sinh đề</span>
+          </div>
+          <div class="p-3.5 bg-white rounded-2xl border-2 border-slate-200">
+            <span class="text-[11px] font-bold text-blue-500 block">Phần I (Nhiều lựa chọn)</span>
+            <span class="text-xl font-black text-blue-600" id="stat-bank-p1">5</span>
+            <span class="text-[10px] text-slate-400 font-semibold block mt-0.5">Tự nhận diện (4 opt)</span>
+          </div>
+          <div class="p-3.5 bg-white rounded-2xl border-2 border-slate-200">
+            <span class="text-[11px] font-bold text-purple-500 block">Phần II (Đúng - Sai)</span>
+            <span class="text-xl font-black text-purple-600" id="stat-bank-p2">4</span>
+            <span class="text-[10px] text-slate-400 font-semibold block mt-0.5">Tự nhận diện (4 ý a-d)</span>
+          </div>
+          <div class="p-3.5 bg-white rounded-2xl border-2 border-slate-200">
+            <span class="text-[11px] font-bold text-emerald-500 block">Phần III (Trả lời ngắn)</span>
+            <span class="text-xl font-black text-emerald-600" id="stat-bank-p3">3</span>
+            <span class="text-[10px] text-slate-400 font-semibold block mt-0.5">Tự nhận diện (Điền số)</span>
+          </div>
+        </div>
+
+        <!-- FORM THÊM CÂU HỎI THÔNG MINH CHO GIÁO VIÊN -->
+        <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 app-shadow-sm space-y-4" id="add-question-box">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
+            <div>
+              <h4 class="font-black text-sm text-[#1E2342]">Thêm câu hỏi mới vào Kho đề</h4>
+              <p class="text-xs text-slate-400">Gõ mã câu hỏi để hệ thống tự động bóc tách Mức độ & Chuyên đề</p>
+            </div>
+            <div id="smart-detect-badge" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-xl text-xs font-bold">
+              <span>🤖 Tự nhận diện:</span>
+              <span id="detect-level-text" class="font-black text-indigo-700">Mức NB</span> •
+              <span id="detect-topic-text" class="font-black text-rose-700">KSHS</span> •
+              <span id="detect-type-text" class="font-black text-emerald-700">TNKQ Nhiều lựa chọn</span>
+            </div>
+          </div>
+
+          <form onsubmit="handleAddNewBankQuestion(event)" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Mã câu hỏi chuẩn (Cú pháp thông minh)</label>
+                <input id="input-q-code" value="Câu 13_NB_(KSHS)" oninput="onInputQuestionCode(this.value)" placeholder="VD: Câu 1_NB_(KSHS)" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-black text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+              </div>
+
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Loại câu hỏi (Tự động hoặc Chọn thủ công)</label>
+                <select id="input-q-type" onchange="onChangeQuestionType(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-700">
+                  <option value="p1">Phần I: TNKQ Nhiều lựa chọn (4 lựa chọn A, B, C, D)</option>
+                  <option value="p2">Phần II: Trắc nghiệm Đúng - Sai (4 ý a, b, c, d)</option>
+                  <option value="p3">Phần III: Trắc nghiệm Trả lời ngắn (Điền số)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Chuyên đề Toán học</label>
+                <select id="input-q-topic" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-700">
+                  <option value="KSHS">Khảo sát hàm số & Đạo hàm (KSHS)</option>
+                  <option value="Oxyz">Vectơ và Tọa độ không gian (Oxyz)</option>
+                  <option value="Xs">Xác suất & Thống kê (Xs)</option>
+                  <option value="HHKG">Hình học không gian cổ điển (HHKG)</option>
+                  <option value="DaySo">Dãy số, Cấp số cộng, Cấp số nhân (DaySo)</option>
+                  <option value="TP">Nguyên hàm, Tích phân (TP)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">Nội dung câu hỏi (Hỗ trợ công thức KaTeX \(\dfrac{a}{b}\))</label>
+              <textarea id="input-q-text" rows="2" placeholder="Nhập đề bài câu hỏi..." required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+            </div>
+
+            <!-- VÙNG NHẬP ĐÁP ÁN CHO PHẦN I (4 LỰA CHỌN) -->
+            <div id="form-area-p1" class="space-y-2">
+              <span class="text-xs font-bold text-slate-600 block">4 Phương án trắc nghiệm:</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <input id="p1-opt-A" placeholder="Phương án A" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                <input id="p1-opt-B" placeholder="Phương án B" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                <input id="p1-opt-C" placeholder="Phương án C" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                <input id="p1-opt-D" placeholder="Phương án D" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div class="flex items-center gap-3 pt-1">
+                <span class="text-xs font-bold text-slate-600">Đáp án đúng:</span>
+                <select id="p1-correct" class="bg-white border border-slate-300 rounded-xl px-3 py-1 text-xs font-black text-indigo-700">
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- VÙNG NHẬP ĐÁP ÁN CHO PHẦN II (ĐÚNG - SAI) -->
+            <div id="form-area-p2" class="hidden space-y-2">
+              <span class="text-xs font-bold text-slate-600 block">4 Mệnh đề Đúng - Sai (a, b, c, d):</span>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold w-6">a)</span>
+                  <input id="p2-item-a" placeholder="Nội dung ý a..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                  <select id="p2-key-a" class="bg-white border border-slate-300 rounded-xl px-2 py-1 text-xs font-bold"><option value="true">Đúng</option><option value="false">Sai</option></select>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold w-6">b)</span>
+                  <input id="p2-item-b" placeholder="Nội dung ý b..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                  <select id="p2-key-b" class="bg-white border border-slate-300 rounded-xl px-2 py-1 text-xs font-bold"><option value="true">Đúng</option><option value="false">Sai</option></select>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold w-6">c)</span>
+                  <input id="p2-item-c" placeholder="Nội dung ý c..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                  <select id="p2-key-c" class="bg-white border border-slate-300 rounded-xl px-2 py-1 text-xs font-bold"><option value="true">Đúng</option><option value="false">Sai</option></select>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold w-6">d)</span>
+                  <input id="p2-item-d" placeholder="Nội dung ý d..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                  <select id="p2-key-d" class="bg-white border border-slate-300 rounded-xl px-2 py-1 text-xs font-bold"><option value="true">Đúng</option><option value="false">Sai</option></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- VÙNG NHẬP ĐÁP ÁN CHO PHẦN III (TRẢ LỜI NGẮN) -->
+            <div id="form-area-p3" class="hidden space-y-2">
+              <span class="text-xs font-bold text-slate-600 block">Đáp số chính xác (Điền số ngắn):</span>
+              <div class="flex items-center gap-2">
+                <input id="p3-correct-val" placeholder="VD: 2 hoặc 1250 hoặc 5" class="w-48 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-indigo-700">
+                <span class="text-xs text-slate-400 font-semibold">(Học sinh điền số vào ô này)</span>
+              </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs shadow-sm transition flex items-center gap-2">
+                <span>+</span> Lưu câu hỏi vào Kho đề
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- DANH SÁCH CÂU HỎI TRONG KHO (HIỂN THỊ MÃ QUY CHUẨN & TYPE TỰ NHẬN DIỆN) -->
+        <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 app-shadow-sm space-y-3">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
+            <div>
+              <h4 class="font-black text-sm text-[#1E2342]">Danh sách câu hỏi trong Kho đề chuẩn (<span id="bank-list-count">12</span> câu)</h4>
+              <p class="text-xs text-slate-400">Các câu hỏi đã được phân loại tự động và sẵn sàng để học sinh sinh đề ngẫu nhiên</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="filterBankList('all')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700">Tất cả</button>
+              <button onclick="filterBankList('p1')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">Phần I (TNKQ)</button>
+              <button onclick="filterBankList('p2')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-50 text-purple-700">Phần II (Đúng-Sai)</button>
+              <button onclick="filterBankList('p3')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700">Phần III (Trả lời ngắn)</button>
+            </div>
+          </div>
+
+          <div class="space-y-3" id="bank-questions-list-container">
+            <!-- Dynamic via JS -->
+          </div>
+        </div>
+
       </div>
 
       <!-- ========================================================= -->
@@ -1687,12 +1909,17 @@
         'teacher-approval': { title: "Phê duyệt học sinh vào lớp", sub: "Quản lý danh sách xin gia nhập lớp 12A1" },
         'teacher-analytics': { title: "Theo dõi quá trình học tập", sub: "Báo cáo thống kê GPA Tốt nghiệp và tiến độ làm đề của học sinh" },
         'teacher-room': { title: "Quản lý phòng thi Online", sub: "Khởi tạo và điều phối các đợt thi trực tuyến" },
-        'matrix-builder': { title: "Ma trận & Bản đặc tả tương tác (THPT FPT Cần Thơ)", sub: "Cấu hình chi tiết số câu, mã năng lực và bấm vào từng ô để chọn câu hỏi từ ngân hàng" }
+        'matrix-builder': { title: "Ma trận & Bản đặc tả tương tác (THPT FPT Cần Thơ)", sub: "Cấu hình chi tiết số câu, mã năng lực và bấm vào từng ô để chọn câu hỏi từ ngân hàng" },
+        'teacher-bank': { title: "Kho đề & Đặt mã chuẩn tự nhận diện", sub: "Quản lý câu hỏi thông minh theo định dạng Câu X_MứcĐộ_(ChuyênĐề) và tự động nhận diện 3 phần" }
       };
 
       if (titles[tabId]) {
         document.getElementById('page-title').innerText = titles[tabId].title;
         document.getElementById('page-subtitle').innerText = titles[tabId].sub;
+      }
+
+      if (tabId === 'teacher-bank') {
+        renderBankQuestionsList();
       }
 
       renderLucide();
@@ -2322,9 +2549,844 @@
       alert('Đã sinh đề thi thành công từ Ma trận đặc tả! Bắt đầu tính giờ làm bài 90 phút.');
     }
 
+    // =========================================================================
+    // 6. PHÂN HỆ KHO ĐỀ THÔNG MINH (GIÁO VIÊN) & SINH ĐỀ NGẪU NHIÊN THEO MA TRẬN
+    // =========================================================================
+
+    // Dữ liệu ngân hàng câu hỏi chuẩn với cú pháp: Câu X_MứcĐộ_(ChuyênĐề)
+    const DEFAULT_SMART_QUESTIONS = [
+      // --- PHẦN I: TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN (4 LỰA CHỌN A, B, C, D) ---
+      {
+        id: "Q_BNK_1",
+        code: "Câu 1_NB_(KSHS)",
+        type: "p1",
+        level: "NB",
+        topic: "KSHS",
+        text: "Cho hàm số \\(y = f(x)\\) có bảng biến thiên trên đoạn \\([-2; 3]\\) với các khoảng đồng biến, nghịch biến rõ ràng. Hàm số đã cho đồng biến trên khoảng nào dưới đây?",
+        options: {
+          A: "\\((-1; 2)\\)",
+          B: "\\((-\\infty; -1)\\)",
+          C: "\\((2; +\\infty)\\)",
+          D: "\\((-2; 3)\\)"
+        },
+        correct: "B",
+        solution: "Dựa vào bảng biến thiên, đạo hàm \\(y' > 0\\) trên khoảng \\((-\\infty; -1)\\) và \\((2; +\\infty)\\), do đó hàm số đồng biến trên khoảng \\((-\\infty; -1)\\)."
+      },
+      {
+        id: "Q_BNK_2",
+        code: "Câu 2_NB_(Oxyz)",
+        type: "p1",
+        level: "NB",
+        topic: "Oxyz",
+        text: "Trong không gian \\(Oxyz\\), cho vectơ \\(\\vec{u} = 2\\vec{i} - 3\\vec{j} + 5\\vec{k}\\). Tọa độ của vectơ \\(\\vec{u}\\) là:",
+        options: {
+          A: "\\((2; -3; 5)\\)",
+          B: "\\((-2; 3; -5)\\)",
+          C: "\\((2; 5; -3)\\)",
+          D: "\\((5; -3; 2)\\)"
+        },
+        correct: "A",
+        solution: "Theo định nghĩa tọa độ vectơ đối với hệ trục \\(Oxyz\\), nếu \\(\\vec{u} = x\\vec{i} + y\\vec{j} + z\\vec{k}\\) thì \\(\\vec{u} = (x; y; z) = (2; -3; 5)\\)."
+      },
+      {
+        id: "Q_BNK_3",
+        code: "Câu 3_TH_(KSHS)",
+        type: "p1",
+        level: "TH",
+        topic: "KSHS",
+        text: "Đường cong trong hình vẽ là đồ thị của hàm số bậc ba \\(y = ax^3 + bx^2 + cx + d\\). Biết đồ thị đi qua gốc tọa độ \\(O(0;0)\\), có điểm cực đại \\((-1; 2)\\) và điểm cực tiểu \\((1; -2)\\). Hàm số đó là:",
+        options: {
+          A: "\\(y = x^3 - 3x\\)",
+          B: "\\(y = -x^3 + 3x\\)",
+          C: "\\(y = x^3 - 3x^2\\)",
+          D: "\\(y = x^4 - 2x^2\\)"
+        },
+        correct: "A",
+        solution: "Đồ thị có nhánh bên phải đi lên nên \\(a > 0\\). Cực trị tại \\(x = \\pm 1\\) nên \\(y' = 3a(x^2 - 1) = 3ax^2 - 3a\\). Thay điểm \\((1; -2)\\) ta được hàm số \\(y = x^3 - 3x\\)."
+      },
+      {
+        id: "Q_BNK_4",
+        code: "Câu 4_TH_(Oxyz)",
+        type: "p1",
+        level: "TH",
+        topic: "Oxyz",
+        text: "Trong không gian \\(Oxyz\\), cho hai điểm \\(A(1; 2; -1)\\) và \\(B(3; 0; 1)\\). Tọa độ trung điểm \\(M\\) của đoạn thẳng \\(AB\\) là:",
+        options: {
+          A: "\\(M(2; 1; 0)\\)",
+          B: "\\(M(4; 2; 0)\\)",
+          C: "\\(M(1; -1; 1)\\)",
+          D: "\\(M(2; -1; 0)\\)"
+        },
+        correct: "A",
+        solution: "Tọa độ trung điểm \\(M\\) của \\(AB\\): \\(x_M = \\dfrac{1+3}{2} = 2\\), \\(y_M = \\dfrac{2+0}{2} = 1\\), \\(z_M = \\dfrac{-1+1}{2} = 0 \\implies M(2; 1; 0)\\)."
+      },
+      {
+        id: "Q_BNK_5",
+        code: "Câu 5_NB_(Xs)",
+        type: "p1",
+        level: "NB",
+        topic: "Xs",
+        text: "Gieo một con xúc xắc cân đối và đồng chất một lần. Xác suất để xuất hiện mặt có số chấm là số chẵn bằng:",
+        options: {
+          A: "\\(\\dfrac{1}{2}\\)",
+          B: "\\(\\dfrac{1}{3}\\)",
+          C: "\\(\\dfrac{1}{6}\\)",
+          D: "\\(\\dfrac{2}{3}\\)"
+        },
+        correct: "A",
+        solution: "Không gian mẫu \\(n(\\Omega) = 6\\). Biến cố mặt chẵn gồm \\(\\{2; 4; 6\\}\\) có 3 phần tử. Xác suất \\(P = \\dfrac{3}{6} = \\dfrac{1}{2}\\)."
+      },
+      {
+        id: "Q_BNK_6",
+        code: "Câu 6_TH_(Xs)",
+        type: "p1",
+        level: "TH",
+        topic: "Xs",
+        text: "Cho hai biến cố độc lập \\(A\\) và \\(B\\) với \\(P(A) = 0.4\\) và \\(P(B) = 0.5\\). Xác suất của biến cố giao \\(A \\cap B\\) là:",
+        options: {
+          A: "\\(0.20\\)",
+          B: "\\(0.90\\)",
+          C: "\\(0.10\\)",
+          D: "\\(0.45\\)"
+        },
+        correct: "A",
+        solution: "Vì \\(A\\) và \\(B\\) độc lập nên \\(P(A \\cap B) = P(A) \\cdot P(B) = 0.4 \\times 0.5 = 0.20\\)."
+      },
+      {
+        id: "Q_BNK_7",
+        code: "Câu 7_NB_(HHKG)",
+        type: "p1",
+        level: "NB",
+        topic: "HHKG",
+        text: "Khối lăng trụ tam giác \\(ABC.A'B'C'\\) có tất cả bao nhiêu cạnh?",
+        options: {
+          A: "9 cạnh",
+          B: "6 cạnh",
+          C: "8 cạnh",
+          D: "5 cạnh"
+        },
+        correct: "A",
+        solution: "Khối lăng trụ tam giác có 3 cạnh đáy trên, 3 cạnh đáy dưới và 3 cạnh bên, tổng cộng có 9 cạnh."
+      },
+      {
+        id: "Q_BNK_8",
+        code: "Câu 8_TH_(DaySo)",
+        type: "p1",
+        level: "TH",
+        topic: "DaySo",
+        text: "Cho cấp số cộng \\((u_n)\\) với số hạng đầu \\(u_1 = 3\\) và công sai \\(d = 4\\). Giá trị của số hạng \\(u_5\\) bằng:",
+        options: {
+          A: "\\(19\\)",
+          B: "\\(23\\)",
+          C: "\\(15\\)",
+          D: "\\(27\\)"
+        },
+        correct: "A",
+        solution: "Số hạng tổng quát: \\(u_5 = u_1 + (5 - 1)d = 3 + 4 \\times 4 = 19\\)."
+      },
+
+      // --- PHẦN II: TRẮC NGHIỆM ĐÚNG - SAI (4 Ý a, b, c, d) ---
+      {
+        id: "Q_BNK_9",
+        code: "Câu 9_NB_(KSHS)",
+        type: "p2",
+        level: "NB",
+        topic: "KSHS",
+        text: "Cho hàm số phân thức bậc nhất trên bậc nhất \\(y = \\dfrac{-x+2}{x-1}\\). Xét tính đúng hoặc sai của các khẳng định sau:",
+        items: [
+          { key: "a", text: "Đồ thị hàm số có đường tiệm cận đứng là \\(x = 1\\) và tiệm cận ngang là \\(y = -1\\).", correct: true },
+          { key: "b", text: "Đồ thị hàm số cắt trục tung tại \\((0; -2)\\) và cắt trục hoành tại \\((2; 0)\\).", correct: true },
+          { key: "c", text: "Đạo hàm của hàm số là \\(y' = \\dfrac{-1}{(x - 1)^2}\\).", correct: true },
+          { key: "d", text: "Hàm số đồng biến trên từng khoảng xác định \\((-\\infty; 1)\\) và \\((1; +\\infty)\\).", correct: false }
+        ],
+        solution: "Mệnh đề a, b, c đúng. Mệnh đề d sai vì \\(y' = \\dfrac{-1}{(x-1)^2} < 0\\) trên mọi \\(x \\neq 1\\) nên hàm số nghịch biến trên từng khoảng xác định."
+      },
+      {
+        id: "Q_BNK_10",
+        code: "Câu 10_TH_(Oxyz)",
+        type: "p2",
+        level: "TH",
+        topic: "Oxyz",
+        text: "Trong không gian \\(Oxyz\\), cho tam giác \\(ABC\\) với \\(A(1; 0; 0)\\), \\(B(0; 2; 0)\\), \\(C(0; 0; 3)\\). Xét tính đúng hoặc sai của các khẳng định sau:",
+        items: [
+          { key: "a", text: "Tọa độ vectơ \\(\\vec{AB} = (-1; 2; 0)\\).", correct: true },
+          { key: "b", text: "Tọa độ trọng tâm \\(G\\) của tam giác \\(ABC\\) là \\(\\left(\\dfrac{1}{3}; \\dfrac{2}{3}; 1\\right)\\).", correct: true },
+          { key: "c", text: "Phương trình mặt phẳng \\((ABC)\\) theo đoạn chắn là \\(\\dfrac{x}{1} + \\dfrac{y}{2} + \\dfrac{z}{3} = 1\\).", correct: true },
+          { key: "d", text: "Gốc tọa độ \\(O\\) nằm trên mặt phẳng \\((ABC)\\).", correct: false }
+        ],
+        solution: "a đúng vì \\(\\vec{AB} = (0-1; 2-0; 0-0) = (-1; 2; 0)\\). b đúng vì \\(G = (\\frac{1}{3}; \\frac{2}{3}; \\frac{3}{3})\\). c đúng theo PT đoạn chắn. d sai vì \\(\\dfrac{0}{1} + \\dfrac{0}{2} + \\dfrac{0}{3} = 0 \\neq 1\\)."
+      },
+      {
+        id: "Q_BNK_11",
+        code: "Câu 11_VD_(HHKG)",
+        type: "p2",
+        level: "VD",
+        topic: "HHKG",
+        text: "Cho hình chóp \\(S.ABCD\\) có đáy \\(ABCD\\) là hình vuông cạnh \\(a\\), cạnh bên \\(SA\\) vuông góc với mặt phẳng đáy \\((ABCD)\\) và \\(SA = a\\sqrt{2}\\).",
+        items: [
+          { key: "a", text: "Đường thẳng \\(BD\\) vuông góc với mặt phẳng \\((SAC)\\).", correct: true },
+          { key: "b", text: "Thể tích của khối chóp \\(S.ABCD\\) bằng \\(V = \\dfrac{a^3\\sqrt{2}}{3}\\).", correct: true },
+          { key: "c", text: "Tam giác \\(SBC\\) vuông tại \\(B\\).", correct: true },
+          { key: "d", text: "Góc giữa đường thẳng \\(SC\\) và mặt phẳng \\((ABCD)\\) bằng \\(60^\\circ\\).", correct: false }
+        ],
+        solution: "a đúng vì \\(BD \\perp AC\\) và \\(BD \\perp SA\\). b đúng: \\(V = \\dfrac{1}{3} a^2 \\cdot a\\sqrt{2} = \\dfrac{a^3\\sqrt{2}}{3}\\). c đúng vì \\(BC \\perp AB\\) và \\(BC \\perp SA \\implies BC \\perp (SAB) \\implies BC \\perp SB\\). d sai vì \\(AC = a\\sqrt{2} = SA \\implies \\tan\\widehat{SCA} = 1 \\implies \\widehat{SCA} = 45^\\circ\\)."
+      },
+      {
+        id: "Q_BNK_12",
+        code: "Câu 12_TH_(Xs)",
+        type: "p2",
+        level: "TH",
+        topic: "Xs",
+        text: "Một hộp chứa 5 quả cầu màu đỏ và 7 quả cầu màu xanh có cùng kích thước. Lấy ngẫu nhiên đồng thời 2 quả cầu. Xét các mệnh đề sau:",
+        items: [
+          { key: "a", text: "Số phần tử của không gian mẫu là \\(C_{12}^2 = 66\\).", correct: true },
+          { key: "b", text: "Xác suất để lấy được 2 quả cầu cùng màu đỏ là \\(\\dfrac{C_5^2}{66} = \\dfrac{5}{33}\\).", correct: true },
+          { key: "c", text: "Xác suất để lấy được 2 quả cầu cùng màu xanh là \\(\\dfrac{C_7^2}{66} = \\dfrac{7}{22}\\).", correct: true },
+          { key: "d", text: "Xác suất để lấy được 2 quả cầu khác màu là \\(\\dfrac{30}{66} = \\dfrac{5}{11}\\).", correct: false }
+        ],
+        solution: "a, b, c đúng. d sai vì số cách chọn 2 quả khác màu là \\(5 \\times 7 = 35 \\implies P = \\dfrac{35}{66}\\)."
+      },
+
+      // --- PHẦN III: TRẮC NGHIỆM TRẢ LỜI NGẮN (ĐIỀN SỐ) ---
+      {
+        id: "Q_BNK_13",
+        code: "Câu 13_VD_(KSHS)",
+        type: "p3",
+        level: "VD",
+        topic: "KSHS",
+        text: "Từ một tấm bìa hình vuông cạnh \\(12\\text{ cm}\\), người ta cắt bỏ bốn hình vuông bằng nhau có cạnh bằng \\(x\\text{ (cm)}\\) ở bốn góc, rồi gập phần còn lại thành một chiếc hộp chữ nhật không nắp. Tìm giá trị của \\(x\\) (đơn vị: \\(\\text{cm}\\)) để thể tích chiếc hộp thu được là lớn nhất.",
+        unit: "cm",
+        correctVal: "2",
+        solution: "Thể tích hộp: \\(V(x) = x(12 - 2x)^2\\) với \\(0 < x < 6\\). \\(V'(x) = 12(x-2)(x-6) = 0 \\implies x = 2\\text{ cm}\\). Khi đó \\(V_{\\max} = 128\\text{ cm}^3\\)."
+      },
+      {
+        id: "Q_BNK_14",
+        code: "Câu 14_VD_(KSHS)",
+        type: "p3",
+        level: "VD",
+        topic: "KSHS",
+        text: "Hai điểm dân cư \\(A\\) và \\(B\\) nằm ở hai bên dòng sông bờ song song. Khoảng cách từ \\(A\\) đến bờ là \\(5\\text{ km}\\), từ \\(B\\) đến bờ là \\(7\\text{ km}\\), khoảng cách giữa hai hình chiếu trên bờ sông là \\(HK = 12\\text{ km}\\). Xây cầu \\(EF\\) vuông góc bờ sông để tổng đường bộ \\(AE + FB\\) ngắn nhất. Khoảng cách \\(HE\\) bằng bao nhiêu kilômét?",
+        unit: "km",
+        correctVal: "5",
+        solution: "Đặt \\(HE = x\\) (\\(0 \\le x \\le 12\\)). Đạo hàm đạt cực tiểu khi \\(\\dfrac{x}{5} = \\dfrac{12-x}{7} \\implies 7x = 60 - 5x \\implies 12x = 60 \\implies x = 5\\text{ km}\\)."
+      },
+      {
+        id: "Q_BNK_15",
+        code: "Câu 15_VD_(Oxyz)",
+        type: "p3",
+        level: "VD",
+        topic: "Oxyz",
+        text: "Trong không gian tọa độ \\(Oxyz\\), một thiết bị flycam xuất phát từ điểm \\(A(10; 20; 30)\\) bay theo đường thẳng đến vị trí \\(B(40; 60; 30)\\) (đơn vị tọa độ là mét). Tính quãng đường thiết bị đã bay được (đơn vị: mét).",
+        unit: "m",
+        correctVal: "50",
+        solution: "Quãng đường bay chính là độ dài đoạn thẳng \\(AB = \\sqrt{(40-10)^2 + (60-20)^2 + (30-30)^2} = \\sqrt{30^2 + 40^2 + 0} = \\sqrt{900 + 1600} = 50\\text{ m}\\)."
+      },
+      {
+        id: "Q_BNK_16",
+        code: "Câu 16_VD_(Xs)",
+        type: "p3",
+        level: "VD",
+        topic: "Xs",
+        text: "Một xạ thủ bắn độc lập 3 phát đạn vào bia với xác suất trúng mỗi phát là \\(0.8\\). Tính xác suất để xạ thủ bắn trúng đúng 2 phát trong 3 phát bắn đó (viết kết quả dưới dạng số thập phân, ví dụ: 0.384).",
+        unit: "",
+        correctVal: "0.384",
+        solution: "Số cách chọn 2 phát trúng trong 3 phát là \\(C_3^2 = 3\\). Xác suất trúng đúng 2 phát là \\(P = C_3^2 \\cdot (0.8)^2 \\cdot (1 - 0.8)^1 = 3 \\cdot 0.64 \\cdot 0.2 = 0.384\\)."
+      }
+    ];
+
+    // Khởi tạo Smart Question Bank từ LocalStorage nếu có
+    let SMART_QUESTION_BANK = (() => {
+      try {
+        const stored = localStorage.getItem('mathmatrix_smart_bank');
+        if (stored) return JSON.parse(stored);
+      } catch (e) {
+        console.warn("Storage access failed", e);
+      }
+      return DEFAULT_SMART_QUESTIONS;
+    })();
+
+    let currentBankFilter = 'all';
+    let activeRandomExam = null;
+
+    function saveBankToStorage() {
+      try {
+        localStorage.setItem('mathmatrix_smart_bank', JSON.stringify(SMART_QUESTION_BANK));
+      } catch (e) {}
+    }
+
+    // HÀM TỰ ĐỘNG BÓC TÁCH MÃ CHUẨN CỦA CÂU HỎI
+    function parseQuestionTag(codeStr) {
+      let level = 'NB';
+      let topic = 'KSHS';
+      let num = 1;
+
+      if (!codeStr) return { num, level, topic };
+
+      const numM = codeStr.match(/Câu\s*(\d+)/i);
+      if (numM) num = parseInt(numM[1]);
+
+      const levelM = codeStr.match(/(?:_|^)(NB|TH|VD|VDC)(?:_|$)/i) || codeStr.match(/\b(NB|TH|VD|VDC)\b/i);
+      if (levelM) level = levelM[1].toUpperCase();
+
+      const topicM = codeStr.match(/\((KSHS|Oxyz|Xs|HHKG|DaySo|TP)\)/i) || codeStr.match(/(?:_|^)(KSHS|Oxyz|Xs|HHKG|DaySo|TP)(?:_|$)/i);
+      if (topicM) topic = topicM[1];
+
+      return { num, level, topic };
+    }
+
+    // TỰ ĐỘNG NHẬN DIỆN LOẠI CÂU HỎI (PHẦN I, PHẦN II, PHẦN III)
+    function detectQuestionType(q) {
+      if (q.type) return q.type;
+      if (q.items && q.items.length > 0) return 'p2';
+      if (q.correctVal !== undefined || q.answer !== undefined) return 'p3';
+      return 'p1';
+    }
+
+    // REALTIME CẬP NHẬT BADGE KHI GIÁO VIÊN GÕ MÃ CÂU HỎI
+    function onInputQuestionCode(val) {
+      const parsed = parseQuestionTag(val);
+      const levelNames = { 'NB': 'Mức NB (Nhận biết)', 'TH': 'Mức TH (Thông hiểu)', 'VD': 'Mức VD (Vận dụng)', 'VDC': 'Mức VDC (Vận dụng cao)' };
+      const topicNames = { 
+        'KSHS': 'Khảo sát hàm số (KSHS)',
+        'Oxyz': 'Vectơ & Tọa độ Oxyz',
+        'Xs': 'Xác suất & Thống kê (Xs)',
+        'HHKG': 'Hình học không gian (HHKG)',
+        'DaySo': 'Dãy số & Cấp số',
+        'TP': 'Nguyên hàm & Tích phân'
+      };
+
+      const levelEl = document.getElementById('detect-level-text');
+      const topicEl = document.getElementById('detect-topic-text');
+      const topicSelect = document.getElementById('input-q-topic');
+
+      if (levelEl) levelEl.innerText = levelNames[parsed.level] || parsed.level;
+      if (topicEl) topicEl.innerText = topicNames[parsed.topic] || parsed.topic;
+      if (topicSelect && topicNames[parsed.topic]) topicSelect.value = parsed.topic;
+    }
+
+    // THAY ĐỔI FORM VÀ NHẬN DIỆN KHI CHỌN LOẠI CÂU HỎI
+    function onChangeQuestionType(type) {
+      const p1Area = document.getElementById('form-area-p1');
+      const p2Area = document.getElementById('form-area-p2');
+      const p3Area = document.getElementById('form-area-p3');
+      const typeText = document.getElementById('detect-type-text');
+
+      if (p1Area) p1Area.classList.toggle('hidden', type !== 'p1');
+      if (p2Area) p2Area.classList.toggle('hidden', type !== 'p2');
+      if (p3Area) p3Area.classList.toggle('hidden', type !== 'p3');
+
+      const typeLabels = {
+        'p1': 'Phần I: TNKQ Nhiều lựa chọn (4 opt)',
+        'p2': 'Phần II: Đúng - Sai (4 ý a-d)',
+        'p3': 'Phần III: Trả lời ngắn (Điền số)'
+      };
+      if (typeText) typeText.innerText = typeLabels[type] || type;
+    }
+
+    // RENDER DANH SÁCH CÂU HỎI TRONG KHO ĐỀ
+    function renderBankQuestionsList(filter = currentBankFilter) {
+      currentBankFilter = filter;
+      const container = document.getElementById('bank-questions-list-container');
+      if (!container) return;
+
+      // Cập nhật số liệu KPI thống kê
+      const total = SMART_QUESTION_BANK.length;
+      const countP1 = SMART_QUESTION_BANK.filter(q => detectQuestionType(q) === 'p1').length;
+      const countP2 = SMART_QUESTION_BANK.filter(q => detectQuestionType(q) === 'p2').length;
+      const countP3 = SMART_QUESTION_BANK.filter(q => detectQuestionType(q) === 'p3').length;
+
+      const statTotal = document.getElementById('stat-bank-total');
+      const statP1 = document.getElementById('stat-bank-p1');
+      const statP2 = document.getElementById('stat-bank-p2');
+      const statP3 = document.getElementById('stat-bank-p3');
+      const listCount = document.getElementById('bank-list-count');
+      const navBadge = document.getElementById('bank-total-badge');
+
+      if (statTotal) statTotal.innerText = total;
+      if (statP1) statP1.innerText = countP1;
+      if (statP2) statP2.innerText = countP2;
+      if (statP3) statP3.innerText = countP3;
+      if (listCount) listCount.innerText = total;
+      if (navBadge) navBadge.innerText = total;
+
+      const filtered = filter === 'all' 
+        ? SMART_QUESTION_BANK 
+        : SMART_QUESTION_BANK.filter(q => detectQuestionType(q) === filter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-xs font-bold text-slate-400">Chưa có câu hỏi nào trong danh mục này.</div>`;
+        return;
+      }
+
+      const levelColor = {
+        'NB': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        'TH': 'bg-blue-100 text-blue-800 border-blue-200',
+        'VD': 'bg-amber-100 text-amber-800 border-amber-200',
+        'VDC': 'bg-rose-100 text-rose-800 border-rose-200'
+      };
+
+      const typeBadge = {
+        'p1': '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-blue-100 text-blue-800">Phần I: TNKQ</span>',
+        'p2': '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-purple-100 text-purple-800">Phần II: Đúng - Sai</span>',
+        'p3': '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800">Phần III: Trả lời ngắn</span>'
+      };
+
+      container.innerHTML = filtered.map((q, idx) => {
+        const type = detectQuestionType(q);
+        const parsed = parseQuestionTag(q.code);
+
+        let contentPreview = '';
+        if (type === 'p1' && q.options) {
+          contentPreview = `
+            <div class="grid grid-cols-2 gap-2 mt-2 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+              <span class="${q.correct === 'A' ? 'font-black text-emerald-700' : 'text-slate-600'}"><strong>A.</strong> ${q.options.A || ''}</span>
+              <span class="${q.correct === 'B' ? 'font-black text-emerald-700' : 'text-slate-600'}"><strong>B.</strong> ${q.options.B || ''}</span>
+              <span class="${q.correct === 'C' ? 'font-black text-emerald-700' : 'text-slate-600'}"><strong>C.</strong> ${q.options.C || ''}</span>
+              <span class="${q.correct === 'D' ? 'font-black text-emerald-700' : 'text-slate-600'}"><strong>D.</strong> ${q.options.D || ''}</span>
+            </div>
+          `;
+        } else if (type === 'p2' && q.items) {
+          contentPreview = `
+            <div class="space-y-1.5 mt-2 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+              ${q.items.map(it => `
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-700"><strong>${it.key})</strong> ${it.text}</span>
+                  <span class="text-[10px] font-black px-2 py-0.5 rounded ${it.correct ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${it.correct ? 'ĐÚNG' : 'SAI'}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else if (type === 'p3') {
+          contentPreview = `
+            <div class="mt-2 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-center gap-2">
+              <span class="text-slate-500 font-bold">Đáp án chuẩn:</span>
+              <span class="font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-lg">${q.correctVal || q.answer || '0'} ${q.unit || ''}</span>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="p-4 rounded-2xl border-2 border-slate-200 hover:border-indigo-300 bg-white space-y-2 transition">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-mono text-xs font-black bg-indigo-50 text-indigo-800 border border-indigo-200 px-2.5 py-1 rounded-lg">
+                  ${q.code}
+                </span>
+                ${typeBadge[type] || ''}
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold border ${levelColor[parsed.level] || 'bg-slate-100 text-slate-700'}">
+                  ${parsed.level}
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                  ${parsed.topic}
+                </span>
+              </div>
+              
+              <div class="flex items-center gap-2">
+                <button onclick="toggleBankQuestionSol('${q.id}')" class="text-xs font-bold text-indigo-600 hover:underline">
+                  Xem lời giải
+                </button>
+                <button onclick="deleteBankQuestion('${q.id}')" class="text-xs font-bold text-rose-600 hover:underline">
+                  Xóa
+                </button>
+              </div>
+            </div>
+
+            <p class="text-xs font-bold text-slate-800 pt-1 leading-relaxed">
+              ${q.text}
+            </p>
+
+            ${contentPreview}
+
+            <div id="bank-sol-${q.id}" class="hidden p-3 bg-amber-50 rounded-xl text-xs border border-amber-200 mt-2 text-slate-700">
+              <span class="font-bold text-amber-900">💡 Hướng dẫn giải:</span> ${q.solution || 'Chưa cập nhật lời giải chi tiết.'}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      renderMath();
+    }
+
+    function filterBankList(filter) {
+      renderBankQuestionsList(filter);
+    }
+
+    function toggleBankQuestionSol(id) {
+      const el = document.getElementById(`bank-sol-${id}`);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    // THÊM CÂU HỎI MỚI VÀO KHO ĐỀ
+    function handleAddNewBankQuestion(e) {
+      e.preventDefault();
+      const code = document.getElementById('input-q-code').value.trim();
+      const type = document.getElementById('input-q-type').value;
+      const topic = document.getElementById('input-q-topic').value;
+      const text = document.getElementById('input-q-text').value.trim();
+      const parsed = parseQuestionTag(code);
+
+      const newQ = {
+        id: "USER_Q_" + Date.now(),
+        code: code,
+        type: type,
+        level: parsed.level || 'NB',
+        topic: topic,
+        text: text,
+        solution: "Lời giải hướng dẫn chi tiết của giáo viên cho câu hỏi này."
+      };
+
+      if (type === 'p1') {
+        newQ.options = {
+          A: document.getElementById('p1-opt-A').value.trim() || 'Phương án A',
+          B: document.getElementById('p1-opt-B').value.trim() || 'Phương án B',
+          C: document.getElementById('p1-opt-C').value.trim() || 'Phương án C',
+          D: document.getElementById('p1-opt-D').value.trim() || 'Phương án D'
+        };
+        newQ.correct = document.getElementById('p1-correct').value;
+      } else if (type === 'p2') {
+        newQ.items = [
+          { key: 'a', text: document.getElementById('p2-item-a').value.trim() || 'Mệnh đề a', correct: document.getElementById('p2-key-a').value === 'true' },
+          { key: 'b', text: document.getElementById('p2-item-b').value.trim() || 'Mệnh đề b', correct: document.getElementById('p2-key-b').value === 'true' },
+          { key: 'c', text: document.getElementById('p2-item-c').value.trim() || 'Mệnh đề c', correct: document.getElementById('p2-key-c').value === 'true' },
+          { key: 'd', text: document.getElementById('p2-item-d').value.trim() || 'Mệnh đề d', correct: document.getElementById('p2-key-d').value === 'true' }
+        ];
+      } else if (type === 'p3') {
+        newQ.correctVal = document.getElementById('p3-correct-val').value.trim() || '0';
+        newQ.unit = "";
+      }
+
+      SMART_QUESTION_BANK.unshift(newQ);
+      saveBankToStorage();
+      renderBankQuestionsList();
+      alert(`✅ Đã thêm câu hỏi [${code}] vào Kho đề thành công! Hệ thống tự nhận diện: ${type === 'p1' ? 'Phần I (TNKQ Nhiều lựa chọn)' : type === 'p2' ? 'Phần II (Đúng - Sai)' : 'Phần III (Trả lời ngắn)'}`);
+      
+      document.getElementById('input-q-text').value = '';
+    }
+
+    function deleteBankQuestion(id) {
+      if (confirm('Thầy/Cô có chắc chắn muốn xóa câu hỏi này khỏi kho đề không?')) {
+        SMART_QUESTION_BANK = SMART_QUESTION_BANK.filter(q => q.id !== id);
+        saveBankToStorage();
+        renderBankQuestionsList();
+      }
+    }
+
+    // =========================================================================
+    // 7. SINH ĐỀ NGẪU NHIÊN CHO HỌC SINH TỪ MA TRẬN VÀ KHO ĐỀ CHUẨN
+    // =========================================================================
+
+    function startRandomExamFromMatrix() {
+      const matrixSelect = document.getElementById('select-random-matrix');
+      const matrixType = matrixSelect ? matrixSelect.value : 'fpt_gk1';
+
+      const matrixInfo = {
+        'fpt_gk1': { name: "Giữa kỳ 1 Toán 12 (FPT Cần Thơ)", p1Count: 4, p2Count: 2, p3Count: 2, scoring: "midterm" },
+        'tot_nghiep': { name: "Luyện thi Tốt nghiệp THPT 2026 (Bộ GD&ĐT)", p1Count: 4, p2Count: 2, p3Count: 2, scoring: "graduation" },
+        'chuyen_de': { name: "Luyện chuyên đề KSHS & Tọa độ Oxyz", p1Count: 4, p2Count: 2, p3Count: 2, scoring: "midterm" }
+      }[matrixType] || { name: "Ma trận chuẩn FPT Cần Thơ", p1Count: 4, p2Count: 2, p3Count: 2, scoring: "midterm" };
+
+      // Chuyển chế độ tính điểm phù hợp
+      setScoringMode(matrixInfo.scoring);
+
+      // Phân nhóm câu hỏi từ Smart Question Bank theo đúng loại được nhận diện
+      const p1Pool = SMART_QUESTION_BANK.filter(q => detectQuestionType(q) === 'p1');
+      const p2Pool = SMART_QUESTION_BANK.filter(q => detectQuestionType(q) === 'p2');
+      const p3Pool = SMART_QUESTION_BANK.filter(q => detectQuestionType(q) === 'p3');
+
+      const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+
+      const selectedP1 = shuffle(p1Pool).slice(0, Math.min(matrixInfo.p1Count, p1Pool.length));
+      const selectedP2 = shuffle(p2Pool).slice(0, Math.min(matrixInfo.p2Count, p2Pool.length));
+      const selectedP3 = shuffle(p3Pool).slice(0, Math.min(matrixInfo.p3Count, p3Pool.length));
+
+      activeRandomExam = {
+        matrixType,
+        matrixName: matrixInfo.name,
+        code: "RD-" + Math.floor(1000 + Math.random() * 9000),
+        p1: selectedP1,
+        p2: selectedP2,
+        p3: selectedP3,
+        scoring: matrixInfo.scoring
+      };
+
+      renderRandomExamView(activeRandomExam);
+
+      // Chuyển tab sang tab thi
+      switchTab('exam-gk1');
+
+      // Ẩn đề mặc định, hiển thị đề ngẫu nhiên
+      const defEl = document.getElementById('exam-default-container');
+      const rndEl = document.getElementById('exam-random-container');
+      if (defEl) defEl.classList.add('hidden');
+      if (rndEl) rndEl.classList.remove('hidden');
+
+      // Reset thời gian làm bài về 90:00
+      timerSeconds = 90 * 60;
+
+      renderLucide();
+      renderMath();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      alert(`🎲 Hệ thống đã sinh ngẫu nhiên 1 đề thi mới theo ${matrixInfo.name}!\n• Mã đề: [${activeRandomExam.code}]\n• Trích xuất từ Kho đề: ${selectedP1.length} câu Phần I, ${selectedP2.length} câu Phần II, ${selectedP3.length} câu Phần III.\nChúc bạn làm bài thi tốt!`);
+    }
+
+    // RENDER GIAO DIỆN ĐỀ THI SINH NGẪU NHIÊN
+    function renderRandomExamView(exam) {
+      const container = document.getElementById('exam-random-container');
+      if (!container) return;
+
+      container.innerHTML = `
+        <!-- BANNER THÔNG TIN ĐỀ SINH NGẪU NHIÊN -->
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-5 rounded-3xl border-2 border-amber-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-xs font-black bg-amber-500 text-white px-2.5 py-0.5 rounded-lg">ĐỀ SINH NGẪU NHIÊN</span>
+              <span class="text-xs font-bold bg-white text-slate-700 px-2 py-0.5 rounded-lg border">Mã đề: <strong>${exam.code}</strong></span>
+              <span class="text-xs font-extrabold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-lg">Khung: ${exam.matrixName}</span>
+            </div>
+            <h3 class="text-lg font-black text-[#1E2342] mt-1.5">Bài Làm Đề Thi Ngẫu Nhiên Từ Kho Đề Chuẩn</h3>
+            <p class="text-xs text-slate-600 mt-0.5">
+              Các câu hỏi được bốc ngẫu nhiên từ ngân hàng câu hỏi gắn mã định chuẩn <code class="font-bold text-indigo-700">Câu X_MứcĐộ_(ChuyênĐề)</code> và tự động phân vào đúng 3 phần thi.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="startRandomExamFromMatrix()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl shadow-sm transition">
+              🎲 Sinh đề khác
+            </button>
+            <button onclick="restoreDefaultExam()" class="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs rounded-xl transition">
+              Quay lại Đề mẫu FPT
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= PHẦN I ================= -->
+        <div class="space-y-4">
+          <div class="bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-200 flex items-center justify-between">
+            <span class="font-black text-sm text-indigo-950">PHẦN I: Câu trắc nghiệm nhiều phương án lựa chọn (${exam.p1.length} câu)</span>
+            <span class="text-xs font-bold text-indigo-700">Mỗi câu đúng: 0.25 điểm</span>
+          </div>
+
+          ${exam.p1.map((q, idx) => `
+            <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-3" id="rnd-box-p1-${idx}">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="font-black text-sm text-[#1E2342]">Câu ${idx + 1}</span>
+                  <span class="font-mono text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded-md">${q.code}</span>
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${q.level} • ${q.topic}</span>
+                </div>
+                <span class="text-xs font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">0.25 điểm</span>
+              </div>
+
+              <p class="text-sm font-semibold text-slate-800 leading-relaxed">${q.text}</p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                  <input type="radio" name="rnd_p1_${idx}" value="A" class="accent-indigo-600">
+                  <span class="text-xs font-bold"><strong>A.</strong> ${q.options ? q.options.A : ''}</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                  <input type="radio" name="rnd_p1_${idx}" value="B" class="accent-indigo-600">
+                  <span class="text-xs font-bold"><strong>B.</strong> ${q.options ? q.options.B : ''}</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                  <input type="radio" name="rnd_p1_${idx}" value="C" class="accent-indigo-600">
+                  <span class="text-xs font-bold"><strong>C.</strong> ${q.options ? q.options.C : ''}</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 cursor-pointer">
+                  <input type="radio" name="rnd_p1_${idx}" value="D" class="accent-indigo-600">
+                  <span class="text-xs font-bold"><strong>D.</strong> ${q.options ? q.options.D : ''}</span>
+                </label>
+              </div>
+
+              <div id="rnd-sol-p1-${idx}" class="hidden p-3 bg-amber-50 rounded-xl text-xs border border-amber-200 mt-2">
+                <span class="font-bold text-amber-900">💡 Đáp án: ${q.correct}.</span> ${q.solution || ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- ================= PHẦN II ================= -->
+        <div class="space-y-4 pt-2">
+          <div class="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-200 flex items-center justify-between">
+            <span class="font-black text-sm text-purple-950">PHẦN II: Câu trắc nghiệm Đúng - Sai (${exam.p2.length} câu)</span>
+            <span class="text-xs font-bold text-purple-700">Tối đa 1.0 điểm/câu</span>
+          </div>
+
+          ${exam.p2.map((q, idx) => `
+            <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-3" id="rnd-box-p2-${idx}">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="font-black text-sm text-[#1E2342]">Câu ${idx + 1}</span>
+                  <span class="font-mono text-xs font-black bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-md">${q.code}</span>
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${q.level} • ${q.topic}</span>
+                </div>
+                <span class="text-xs font-extrabold text-purple-700 bg-purple-50 px-2 py-0.5 rounded">Tối đa 1.0 điểm</span>
+              </div>
+
+              <p class="text-sm font-semibold text-slate-800 leading-relaxed">${q.text}</p>
+
+              <div class="space-y-2">
+                ${(q.items || []).map(it => `
+                  <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3 flex-wrap">
+                    <span class="text-xs font-bold text-slate-800"><strong>${it.key})</strong> ${it.text}</span>
+                    <div class="flex items-center gap-3">
+                      <label class="flex items-center gap-1.5 text-xs font-bold text-emerald-700 cursor-pointer">
+                        <input type="radio" name="rnd_p2_${idx}_${it.key}" value="true" class="accent-emerald-600"> Đúng
+                      </label>
+                      <label class="flex items-center gap-1.5 text-xs font-bold text-rose-700 cursor-pointer">
+                        <input type="radio" name="rnd_p2_${idx}_${it.key}" value="false" class="accent-rose-600"> Sai
+                      </label>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div id="rnd-sol-p2-${idx}" class="hidden p-3 bg-amber-50 rounded-xl text-xs border border-amber-200 mt-2">
+                <span class="font-bold text-amber-900">💡 Hướng dẫn giải:</span> ${q.solution || ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- ================= PHẦN III ================= -->
+        <div class="space-y-4 pt-2">
+          <div class="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 flex items-center justify-between">
+            <span class="font-black text-sm text-emerald-950">PHẦN III: Câu trắc nghiệm Trả lời ngắn (${exam.p3.length} câu)</span>
+            <span class="text-xs font-bold text-emerald-800">Mỗi câu đúng: 0.5 điểm</span>
+          </div>
+
+          ${exam.p3.map((q, idx) => `
+            <div class="bg-white p-5 rounded-3xl border-2 border-slate-200 space-y-3" id="rnd-box-p3-${idx}">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="font-black text-sm text-[#1E2342]">Câu ${idx + 1}</span>
+                  <span class="font-mono text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md">${q.code}</span>
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${q.level} • ${q.topic}</span>
+                </div>
+                <span class="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">0.5 điểm</span>
+              </div>
+
+              <p class="text-sm font-semibold text-slate-800 leading-relaxed">${q.text}</p>
+
+              <div class="flex items-center gap-3 pt-1">
+                <label class="text-xs font-bold text-slate-600">Đáp số của bạn:</label>
+                <input type="text" id="rnd_p3_ans_${idx}" placeholder="Nhập đáp số (vd: ${q.correctVal || '2'})" class="w-48 bg-slate-50 border-2 border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-indigo-700 focus:outline-none focus:border-indigo-500">
+                <span class="text-xs font-bold text-slate-400">${q.unit || ''}</span>
+              </div>
+
+              <div id="rnd-sol-p3-${idx}" class="hidden p-3 bg-amber-50 rounded-xl text-xs border border-amber-200 mt-2">
+                <span class="font-bold text-amber-900">💡 Đáp số đúng: ${q.correctVal || q.answer}.</span> ${q.solution || ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- NÚT NỘP BÀI DÀNH CHO ĐỀ NGẪU NHIÊN -->
+        <div class="pt-4 flex justify-center">
+          <button onclick="submitRandomExam()" class="bg-[#1E2342] hover:bg-[#151930] text-white font-extrabold text-sm px-8 py-3.5 rounded-2xl shadow-[0_4px_0_0_#0c0e1a] active:translate-y-1 transition flex items-center gap-2">
+            <span>🚀</span> Nộp bài thi sinh ngẫu nhiên & Chấm điểm
+          </button>
+        </div>
+      `;
+    }
+
+    // CHẤM ĐIỂM ĐỀ THI SINH NGẪU NHIÊN
+    function submitRandomExam() {
+      if (!activeRandomExam) return;
+
+      // 1. Chấm Phần I
+      let p1Score = 0;
+      activeRandomExam.p1.forEach((q, idx) => {
+        const selected = document.querySelector(`input[name="rnd_p1_${idx}"]:checked`)?.value;
+        if (selected === q.correct) {
+          p1Score += 0.25;
+        }
+        const solEl = document.getElementById(`rnd-sol-p1-${idx}`);
+        if (solEl) solEl.classList.remove('hidden');
+      });
+
+      // 2. Chấm Phần II
+      let p2Score = 0;
+      activeRandomExam.p2.forEach((q, idx) => {
+        let correctSub = 0;
+        (q.items || []).forEach(it => {
+          const val = document.querySelector(`input[name="rnd_p2_${idx}_${it.key}"]:checked`)?.value;
+          if (val === String(it.correct)) {
+            correctSub++;
+          }
+        });
+
+        if (currentScoringMode === 'midterm') {
+          p2Score += correctSub * 0.25;
+        } else {
+          if (correctSub === 1) p2Score += 0.10;
+          else if (correctSub === 2) p2Score += 0.25;
+          else if (correctSub === 3) p2Score += 0.50;
+          else if (correctSub === 4) p2Score += 1.00;
+        }
+
+        const solEl = document.getElementById(`rnd-sol-p2-${idx}`);
+        if (solEl) solEl.classList.remove('hidden');
+      });
+
+      // 3. Chấm Phần III
+      let p3Score = 0;
+      activeRandomExam.p3.forEach((q, idx) => {
+        const userAns = document.getElementById(`rnd_p3_ans_${idx}`)?.value.trim();
+        const expected = String(q.correctVal || q.answer || '').trim();
+        if (userAns && expected && userAns === expected) {
+          p3Score += 0.5;
+        }
+        const solEl = document.getElementById(`rnd-sol-p3-${idx}`);
+        if (solEl) solEl.classList.remove('hidden');
+      });
+
+      const totalScore = Number((p1Score + p2Score + p3Score).toFixed(2));
+
+      // Hiển thị modal kết quả
+      document.getElementById('res-part1-score').innerText = p1Score.toFixed(2);
+      document.getElementById('res-part2-score').innerText = p2Score.toFixed(2);
+      document.getElementById('res-part3-score').innerText = p3Score.toFixed(2);
+      document.getElementById('res-total-score').innerText = totalScore.toFixed(2);
+      
+      document.getElementById('res-scoring-note').innerText = currentScoringMode === 'midterm' 
+        ? `Đã tính điểm đề sinh ngẫu nhiên [${activeRandomExam.code}] theo quy tắc Giữa kỳ: 0.25đ/ý Phần II.`
+        : `Đã tính điểm đề sinh ngẫu nhiên [${activeRandomExam.code}] theo thang lũy tiến Bộ GD&ĐT (0.1, 0.25, 0.5, 1.0đ) cho Phần II. Kết quả được tính vào GPA Tốt nghiệp!`;
+
+      // Thêm vào Lịch sử làm bài
+      examHistory.unshift({
+        id: "H" + Date.now(),
+        title: `Đề sinh ngẫu nhiên: ${activeRandomExam.matrixName} (${activeRandomExam.code})`,
+        category: activeRandomExam.scoring === 'graduation' ? 'tot_nghiep' : 'midterm_12',
+        categoryLabel: activeRandomExam.scoring === 'graduation' ? 'Tốt nghiệp THPT' : 'Giữa kỳ 12',
+        date: "Vừa xong",
+        score: totalScore,
+        badgeClass: activeRandomExam.scoring === 'graduation' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'
+      });
+
+      renderHistoryTable();
+      updateGPAStatistics();
+
+      document.getElementById('gk1-result-modal').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // QUAY LẠI ĐỀ GỐC
+    function restoreDefaultExam() {
+      const defEl = document.getElementById('exam-default-container');
+      const rndEl = document.getElementById('exam-random-container');
+      if (defEl) defEl.classList.remove('hidden');
+      if (rndEl) rndEl.classList.add('hidden');
+      document.getElementById('gk1-result-modal').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     // Tự động gọi render khi tải trang
     window.addEventListener('DOMContentLoaded', () => {
       renderMatrixSpecTable();
+      renderBankQuestionsList();
     });
   </script>
 </body>
